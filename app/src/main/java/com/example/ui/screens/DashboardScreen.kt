@@ -289,8 +289,9 @@ fun DashboardScreen(
                                     label = {
                                         Text(
                                             text = category,
-                                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                            fontSize = 12.sp
+                                            fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Bold,
+                                            fontSize = 12.sp,
+                                            color = if (isSelected) Color.White else ShajeenHeadingText
                                         )
                                     },
                                     colors = FilterChipDefaults.filterChipColors(
@@ -302,7 +303,9 @@ fun DashboardScreen(
                                     border = FilterChipDefaults.filterChipBorder(
                                         enabled = true,
                                         selected = isSelected,
-                                        borderColor = if (isSelected) ShajeenSkyBlue else Color(0xFFE2E8F0)
+                                        borderColor = if (isSelected) ShajeenSkyBlue else Color(0xFFCBD5E1),
+                                        selectedBorderColor = ShajeenSkyBlue,
+                                        borderWidth = 1.dp
                                     ),
                                     shape = RoundedCornerShape(12.dp),
                                     modifier = Modifier.testTag("category_chip_$category")

@@ -43,6 +43,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FlightTakeoff
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.MilitaryTech
@@ -190,6 +191,7 @@ fun AdminScreen(
     onDeleteNotification: (Long) -> Unit = {},
     onChangeAdminPassword: (oldPin: String, newPin: String, onResult: (Boolean, String) -> Unit) -> Unit = { _, _, cb -> cb(false, "") },
     onClearAdminLogs: () -> Unit = {},
+    onReturnToHome: () -> Unit = {},
     onLogoutAdmin: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -269,16 +271,28 @@ fun AdminScreen(
                             }
                         }
 
-                        // Logout Button
-                        IconButton(
-                            onClick = onLogoutAdmin,
-                            modifier = Modifier.testTag("admin_logout_btn")
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Logout,
-                                contentDescription = "تسجيل خروج المالك",
-                                tint = Color.White
-                            )
+                        // Home and Logout Buttons
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            IconButton(
+                                onClick = onReturnToHome,
+                                modifier = Modifier.testTag("admin_home_btn")
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Home,
+                                    contentDescription = "العودة للرئيسية",
+                                    tint = Color.White
+                                )
+                            }
+                            IconButton(
+                                onClick = onLogoutAdmin,
+                                modifier = Modifier.testTag("admin_logout_btn")
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Logout,
+                                    contentDescription = "تسجيل خروج المالك",
+                                    tint = Color.White
+                                )
+                            }
                         }
                     }
 
@@ -932,19 +946,35 @@ private fun AdminBookingsTab(
             modifier = Modifier
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             statuses.forEach { s ->
                 val isSel = statusFilter == s
                 FilterChip(
                     selected = isSel,
                     onClick = { statusFilter = s },
-                    label = { Text(s, fontWeight = if (isSel) FontWeight.Bold else FontWeight.Normal, fontSize = 11.5.sp) },
+                    label = {
+                        Text(
+                            text = s,
+                            fontWeight = if (isSel) FontWeight.ExtraBold else FontWeight.Bold,
+                            fontSize = 12.sp,
+                            color = if (isSel) Color.White else ShajeenHeadingText
+                        )
+                    },
                     colors = FilterChipDefaults.filterChipColors(
+                        containerColor = Color.White,
+                        labelColor = ShajeenHeadingText,
                         selectedContainerColor = ShajeenSkyBlue,
                         selectedLabelColor = Color.White
                     ),
-                    shape = RoundedCornerShape(10.dp)
+                    border = FilterChipDefaults.filterChipBorder(
+                        enabled = true,
+                        selected = isSel,
+                        borderColor = if (isSel) ShajeenSkyBlue else Color(0xFFCBD5E1),
+                        selectedBorderColor = ShajeenSkyBlue,
+                        borderWidth = if (isSel) 1.5.dp else 1.dp
+                    ),
+                    shape = RoundedCornerShape(12.dp)
                 )
             }
         }

@@ -1,6 +1,7 @@
 package com.example.ui
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -34,6 +35,8 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.AdminPanelSettings
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.Home
@@ -85,6 +88,7 @@ import com.example.ui.screens.ElectronicBookingScreen
 import com.example.ui.screens.LoginScreen
 import com.example.ui.screens.MyBookingsScreen
 import com.example.ui.screens.ProfileScreen
+import com.example.ui.screens.SplashScreen
 import com.example.ui.theme.ShajeenDarkBlue
 import com.example.ui.theme.ShajeenGold
 import com.example.ui.theme.ShajeenHeadingText
@@ -120,11 +124,21 @@ fun ShajeenApp(
     val allWallets by viewModel.allPaymentWallets.collectAsStateWithLifecycle()
     val visaRequirements by viewModel.allVisaRequirements.collectAsStateWithLifecycle()
     val clientNotifications by viewModel.clientNotifications.collectAsStateWithLifecycle()
+    val allNotifications by viewModel.allNotifications.collectAsStateWithLifecycle()
+    val allAdminLogs by viewModel.allAdminLogs.collectAsStateWithLifecycle()
 
     // Global Admin PIN Dialog state (Password: 770038)
     var showGlobalAdminDialog by remember { mutableStateOf(false) }
     var adminPinInput by remember { mutableStateOf("") }
+    var adminPinInputVisible by remember { mutableStateOf(false) }
     var adminPinHasError by remember { mutableStateOf(false) }
+
+    // Intercept back button when not on Home, Login, or Splash screen
+    if (currentScreen != AppScreen.DASHBOARD && currentScreen != AppScreen.LOGIN && currentScreen != AppScreen.SPLASH) {
+        BackHandler {
+            viewModel.navigateTo(AppScreen.DASHBOARD)
+        }
+    }
 
     // Mandatory RTL (Right-to-Left) Arabic layout direction support
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -133,7 +147,7 @@ fun ShajeenApp(
             snackbarHost = { SnackbarHost(snackbarHostState) },
             bottomBar = {
                 // Show 5-item bottom navigation bar matching the Reference Image when logged in
-                if (currentScreen != AppScreen.LOGIN) {
+                if (currentScreen != AppScreen.LOGIN && currentScreen != AppScreen.SPLASH) {
                     NavigationBar(
                         modifier = Modifier
                             .windowInsetsPadding(WindowInsets.navigationBars)
@@ -312,6 +326,13 @@ fun ShajeenApp(
                 label = "ScreenTransition"
             ) { screen ->
                 when (screen) {
+                    AppScreen.SPLASH -> {
+                        SplashScreen(
+                            onTimeout = {
+                                viewModel.navigateTo(AppScreen.LOGIN)
+                            }
+                        )
+                    }
                     AppScreen.LOGIN -> {
                         LoginScreen(
                             agencySettings = agencySettings,
@@ -438,6 +459,13 @@ fun ShajeenApp(
                         ProfileScreen(
                             currentClient = currentClient,
                             agencySettings = agencySettings,
+                            onOwnerLoginClick = {
+                                if (isAdminLoggedIn) {
+                                    viewModel.navigateTo(AppScreen.ADMIN)
+                                } else {
+                                    showGlobalAdminDialog = true
+                                }
+                            },
                             onLogout = { viewModel.logoutClient() }
                         )
                     }
@@ -452,6 +480,8 @@ fun ShajeenApp(
                             electronicBookings = allElectronicBookings,
                             paymentWallets = allWallets,
                             visaRequirements = visaRequirements,
+                            notifications = allNotifications,
+                            adminLogs = allAdminLogs,
                             onUpdateElectronicBookingStatus = { bId, uId, bNum, status, notes ->
                                 viewModel.updateElectronicBookingStatus(bId, uId, bNum, status, notes)
                             },
@@ -472,15 +502,34 @@ fun ShajeenApp(
                             },
                             onSaveService = { service -> viewModel.saveService(service) {} },
                             onDeleteService = { service -> viewModel.deleteService(service) },
+                            onToggleServiceVisibility = { viewModel.toggleServiceVisibility(it) },
+                            onToggleServiceOffer = { viewModel.toggleServiceOffer(it) },
                             onDeleteClient = { client -> viewModel.deleteClient(client) },
+                            onUpdateClient = { viewModel.updateClientInfo(it) {} },
+                            onToggleClientStatus = { viewModel.toggleClientStatus(it) },
                             onUpdateBookingStatus = { id, status -> viewModel.updateBookingStatus(id, status) },
+                            onUpdateBookingStatusAndNotes = { id, status, notes -> viewModel.updateBookingStatusAndNotes(id, status, notes) },
+                            onDeleteBooking = { viewModel.deleteBooking(it) },
                             onUpdateAgencySettings = { addr, p1, p2, p3, p4, ann ->
                                 viewModel.updateAgencySettings(addr, p1, p2, p3, p4, ann) {}
+                            },
+                            onUpdateAgencyFullSettings = { name, addr, p1, p2, p3, p4, ann, wa, em, hr, soc, ab, tg, shAnn, maint ->
+                                viewModel.updateAgencyFullSettings(name, addr, p1, p2, p3, p4, ann, wa, em, hr, soc, ab, tg, shAnn, maint) {}
                             },
                             onAddNews = { title, content, date, tag ->
                                 viewModel.addNews(title, content, date, tag) {}
                             },
+                            onUpdateNews = { viewModel.updateNews(it) {} },
                             onDeleteNews = { news -> viewModel.deleteNews(news) },
+                            onSendPushNotification = { title, msg, targetId ->
+                                viewModel.sendPushNotification(title, msg, targetId) {}
+                            },
+                            onDeleteNotification = { viewModel.deleteNotification(it) },
+                            onChangeAdminPassword = { oldPin, newPin, cb ->
+                                viewModel.changeAdminPassword(oldPin, newPin, cb)
+                            },
+                            onClearAdminLogs = { viewModel.clearAdminLogs() },
+                            onReturnToHome = { viewModel.navigateTo(AppScreen.DASHBOARD) },
                             onLogoutAdmin = { viewModel.logoutAdmin() }
                         )
                     }
@@ -532,6 +581,7 @@ fun ShajeenApp(
                             )
                         )
                         Spacer(modifier = Modifier.height(14.dp))
+
                         OutlinedTextField(
                             value = adminPinInput,
                             onValueChange = {
@@ -542,12 +592,21 @@ fun ShajeenApp(
                             leadingIcon = {
                                 Icon(Icons.Default.Lock, contentDescription = null, tint = ShajeenSkyBlue)
                             },
-                            visualTransformation = PasswordVisualTransformation(),
+                            trailingIcon = {
+                                IconButton(onClick = { adminPinInputVisible = !adminPinInputVisible }) {
+                                    Icon(
+                                        imageVector = if (adminPinInputVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+                                        contentDescription = "إظهار الرمز",
+                                        tint = ShajeenSkyBlue
+                                    )
+                                }
+                            },
+                            visualTransformation = if (adminPinInputVisible) androidx.compose.ui.text.input.VisualTransformation.None else PasswordVisualTransformation(),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                             isError = adminPinHasError,
                             supportingText = {
                                 if (adminPinHasError) {
-                                    Text("رمز المرور غير صحيح، يرجى المحاولة مجدداً", color = MaterialTheme.colorScheme.error)
+                                    Text("رمز المرور غير صحيح، يرجى إعادة المحاولة", color = MaterialTheme.colorScheme.error)
                                 }
                             },
                             colors = OutlinedTextFieldDefaults.colors(

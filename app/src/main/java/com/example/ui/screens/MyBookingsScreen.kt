@@ -178,28 +178,58 @@ fun MyBookingsScreen(
                     .padding(bottom = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                val isTab1 = (selectedTab == "الحجز الإلكتروني")
                 FilterChip(
-                    selected = (selectedTab == "الحجز الإلكتروني"),
+                    selected = isTab1,
                     onClick = { selectedTab = "الحجز الإلكتروني" },
-                    label = { Text("التأشيرات والحجز الإلكتروني (${electronicBookings.size})", fontWeight = FontWeight.Bold) },
+                    label = {
+                        Text(
+                            text = "التأشيرات والحجز الإلكتروني (${electronicBookings.size})",
+                            fontWeight = if (isTab1) FontWeight.ExtraBold else FontWeight.Bold,
+                            color = if (isTab1) Color.White else ShajeenHeadingText
+                        )
+                    },
                     colors = FilterChipDefaults.filterChipColors(
+                        containerColor = Color.White,
+                        labelColor = ShajeenHeadingText,
                         selectedContainerColor = ShajeenPrimaryButton,
-                        selectedLabelColor = Color.White,
-                        containerColor = ShajeenCardBg
+                        selectedLabelColor = Color.White
                     ),
-                    shape = RoundedCornerShape(10.dp)
+                    border = FilterChipDefaults.filterChipBorder(
+                        enabled = true,
+                        selected = isTab1,
+                        borderColor = if (isTab1) ShajeenPrimaryButton else Color(0xFFCBD5E1),
+                        selectedBorderColor = ShajeenPrimaryButton,
+                        borderWidth = 1.dp
+                    ),
+                    shape = RoundedCornerShape(12.dp)
                 )
 
+                val isTab2 = (selectedTab == "حجوزات الخدمات")
                 FilterChip(
-                    selected = (selectedTab == "حجوزات الخدمات"),
+                    selected = isTab2,
                     onClick = { selectedTab = "حجوزات الخدمات" },
-                    label = { Text("خدمات الوكالة (${bookings.size})", fontWeight = FontWeight.Bold) },
+                    label = {
+                        Text(
+                            text = "خدمات الوكالة (${bookings.size})",
+                            fontWeight = if (isTab2) FontWeight.ExtraBold else FontWeight.Bold,
+                            color = if (isTab2) Color.White else ShajeenHeadingText
+                        )
+                    },
                     colors = FilterChipDefaults.filterChipColors(
+                        containerColor = Color.White,
+                        labelColor = ShajeenHeadingText,
                         selectedContainerColor = ShajeenPrimaryButton,
-                        selectedLabelColor = Color.White,
-                        containerColor = ShajeenCardBg
+                        selectedLabelColor = Color.White
                     ),
-                    shape = RoundedCornerShape(10.dp)
+                    border = FilterChipDefaults.filterChipBorder(
+                        enabled = true,
+                        selected = isTab2,
+                        borderColor = if (isTab2) ShajeenPrimaryButton else Color(0xFFCBD5E1),
+                        selectedBorderColor = ShajeenPrimaryButton,
+                        borderWidth = 1.dp
+                    ),
+                    shape = RoundedCornerShape(12.dp)
                 )
             }
 

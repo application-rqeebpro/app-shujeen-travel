@@ -1,10 +1,13 @@
 package com.example.ui.screens
 
+import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,15 +29,20 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.Badge
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.LocationCity
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Login
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Public
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -64,13 +72,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.R
 import com.example.data.LocationData
 import com.example.data.entity.AgencySettingsEntity
 import com.example.data.entity.ClientEntity
@@ -79,6 +90,7 @@ import com.example.ui.components.AgencyOwnerPortalCard
 import com.example.ui.components.CustomerServiceTopBar
 import com.example.ui.components.OfficialShajeenLogoCard
 import com.example.ui.components.ServiceIconsHeaderRow
+import com.example.ui.theme.ShajeenBodyText
 import com.example.ui.theme.ShajeenDarkBlue
 import com.example.ui.theme.ShajeenGold
 import com.example.ui.theme.ShajeenHeadingText
@@ -157,6 +169,7 @@ fun LoginScreen(
     // Admin Dialog state
     var showAdminDialog by remember { mutableStateOf(false) }
     var adminPin by remember { mutableStateOf("") }
+    var adminPinVisible by remember { mutableStateOf(false) }
     var adminPinError by remember { mutableStateOf(false) }
 
     val customerPhone = agencySettings?.phone1 ?: "+967 777779492"
@@ -177,41 +190,12 @@ fun LoginScreen(
                 .padding(horizontal = 16.dp, vertical = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // 1. Top Customer Service Bar
-            CustomerServiceTopBar(phoneNumber = customerPhone)
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // 2. Owner Portal Card (Dark Navy, Crown, Gold touches, Golden "دخول المالك" button)
-            AgencyOwnerPortalCard(
+            // Modern Sleek Header for Login Screen
+            ModernLoginHeroHeader(
                 onOwnerLoginClick = { showAdminDialog = true }
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // 3. Central Brand Logo Showcase
-            OfficialShajeenLogoCard(width = 190, elevation = 2)
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // 4. Service Icons Header Row (Neatly arranged in header like reference image)
-            ServiceIconsHeaderRow()
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Subtitle text
-            Text(
-                text = "تسجيل الدخول للاطلاع على الحجوزات وإصدار التأشيرات والخدمات",
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Medium,
-                    color = ShajeenSecondaryText,
-                    fontSize = 12.5.sp,
-                    textAlign = TextAlign.Center
-                ),
-                modifier = Modifier.padding(horizontal = 12.dp)
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(18.dp))
 
             // 5. Two Tabs: "تسجيل الدخول" and "إنشاء حساب جديد"
             Surface(
@@ -303,7 +287,7 @@ fun LoginScreen(
 
             // TAB CONTENT
             if (selectedTab == AuthTab.LOGIN) {
-                // 6. Login Form Card (White card, rounded corners, soft shadow, phone input, big sky blue button)
+                // Login Form Card
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -311,7 +295,7 @@ fun LoginScreen(
                     shape = RoundedCornerShape(20.dp),
                     colors = CardDefaults.cardColors(containerColor = Color.White),
                     elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                    border = BorderStroke(1.dp, Color(0xFFE2E8F0))
+                    border = BorderStroke(1.5.dp, Color(0xFFCBD5E1))
                 ) {
                     Column(
                         modifier = Modifier
@@ -320,14 +304,14 @@ fun LoginScreen(
                     ) {
                         Text(
                             text = "رقم الهاتف المسجل *",
-                            style = MaterialTheme.typography.titleSmall.copy(
+                            style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold,
                                 color = ShajeenHeadingText,
-                                fontSize = 14.sp
+                                fontSize = 15.sp
                             )
                         )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
 
                         OutlinedTextField(
                             value = loginPhoneNumber,
@@ -338,8 +322,9 @@ fun LoginScreen(
                             placeholder = {
                                 Text(
                                     "أدخل رقم هاتفك (مثال: 777777777)",
-                                    color = ShajeenSecondaryText.copy(alpha = 0.7f),
-                                    fontSize = 13.5.sp
+                                    color = Color(0xFF64748B),
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium
                                 )
                             },
                             leadingIcon = {
@@ -354,12 +339,19 @@ fun LoginScreen(
                             isError = loginPhoneError,
                             supportingText = {
                                 if (loginPhoneError) {
-                                    Text("يرجى إدخال رقم هاتف صحيح للمتابعة", color = MaterialTheme.colorScheme.error)
+                                    Text(
+                                        "يرجى إدخال رقم هاتف صحيح للمتابعة",
+                                        color = MaterialTheme.colorScheme.error,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 12.sp
+                                    )
                                 }
                             },
                             colors = OutlinedTextFieldDefaults.colors(
+                                focusedTextColor = ShajeenHeadingText,
+                                unfocusedTextColor = ShajeenHeadingText,
                                 focusedBorderColor = ShajeenSkyBlue,
-                                unfocusedBorderColor = Color(0xFFCBD5E1),
+                                unfocusedBorderColor = Color(0xFF94A3B8),
                                 focusedContainerColor = Color.White,
                                 unfocusedContainerColor = Color(0xFFF8FAFC)
                             ),
@@ -369,7 +361,7 @@ fun LoginScreen(
                                 .testTag("login_phone_input")
                         )
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(14.dp))
 
                         // Large Sky Blue Button: "دخول إلى حسابي"
                         Button(
@@ -390,7 +382,7 @@ fun LoginScreen(
                             elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(52.dp)
+                                .height(54.dp)
                                 .testTag("login_submit_btn")
                         ) {
                             Icon(
@@ -404,149 +396,40 @@ fun LoginScreen(
                                 text = "دخول إلى حسابي",
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 16.sp
+                                    fontSize = 16.sp,
+                                    color = Color.White
                                 )
                             )
                         }
-                    }
-                }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                // 7. Section: "الحسابات المسجلة مسبقاً"
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag("registered_accounts_section"),
-                    shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                    border = BorderStroke(1.dp, Color(0xFFE2E8F0))
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(18.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
+                        // Clear helpful guidance note with strong contrast (No auto-fill button)
+                        Surface(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp),
+                            color = Color(0xFFF0F9FF),
+                            border = BorderStroke(1.dp, Color(0xFFBAE6FD))
                         ) {
-                            Surface(
-                                shape = CircleShape,
-                                color = ShajeenSkyContainer,
-                                modifier = Modifier.size(32.dp)
+                            Row(
+                                modifier = Modifier.padding(12.dp),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Box(contentAlignment = Alignment.Center) {
-                                    Icon(
-                                        imageVector = Icons.Default.Person,
-                                        contentDescription = null,
-                                        tint = ShajeenSkyBlue,
-                                        modifier = Modifier.size(18.dp)
-                                    )
-                                }
-                            }
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Text(
-                                text = "الحسابات المسجلة مسبقاً",
-                                style = MaterialTheme.typography.titleSmall.copy(
-                                    fontWeight = FontWeight.Bold,
-                                    color = ShajeenHeadingText,
-                                    fontSize = 14.5.sp
+                                Icon(
+                                    imageVector = Icons.Default.CheckCircle,
+                                    contentDescription = null,
+                                    tint = ShajeenSkyBlue,
+                                    modifier = Modifier.size(18.dp)
                                 )
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        if (allClients.isNotEmpty()) {
-                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                allClients.take(5).forEach { client ->
-                                    Surface(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clip(RoundedCornerShape(14.dp))
-                                            .clickable { onQuickPhoneLogin(client.phone) }
-                                            .testTag("registered_account_${client.phone}"),
-                                        shape = RoundedCornerShape(14.dp),
-                                        color = Color(0xFFF8FAFC),
-                                        border = BorderStroke(1.dp, Color(0xFFE2E8F0))
-                                    ) {
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(horizontal = 12.dp, vertical = 10.dp),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.SpaceBetween
-                                        ) {
-                                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                                Surface(
-                                                    shape = CircleShape,
-                                                    color = ShajeenSkyContainer,
-                                                    modifier = Modifier.size(36.dp)
-                                                ) {
-                                                    Box(contentAlignment = Alignment.Center) {
-                                                        Icon(
-                                                            imageVector = Icons.Default.Person,
-                                                            contentDescription = null,
-                                                            tint = ShajeenSkyBlue,
-                                                            modifier = Modifier.size(20.dp)
-                                                        )
-                                                    }
-                                                }
-                                                Spacer(modifier = Modifier.width(10.dp))
-                                                Column {
-                                                    Text(
-                                                        text = client.fullName,
-                                                        style = MaterialTheme.typography.bodyMedium.copy(
-                                                            fontWeight = FontWeight.Bold,
-                                                            color = ShajeenHeadingText,
-                                                            fontSize = 13.5.sp
-                                                        )
-                                                    )
-                                                    Text(
-                                                        text = client.phone,
-                                                        style = MaterialTheme.typography.bodySmall.copy(
-                                                            color = ShajeenSecondaryText,
-                                                            fontSize = 11.5.sp
-                                                        )
-                                                    )
-                                                }
-                                            }
-
-                                            Surface(
-                                                shape = RoundedCornerShape(10.dp),
-                                                color = ShajeenSkyContainer
-                                            ) {
-                                                Text(
-                                                    text = "دخول",
-                                                    style = MaterialTheme.typography.labelSmall.copy(
-                                                        fontWeight = FontWeight.Bold,
-                                                        color = ShajeenSkyBlue,
-                                                        fontSize = 11.5.sp
-                                                    ),
-                                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            Surface(
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(12.dp),
-                                color = Color(0xFFF8FAFC),
-                                border = BorderStroke(1.dp, Color(0xFFE2E8F0))
-                            ) {
+                                Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = "لم يتم تسجيل أي حساب على هذا الجهاز بعد. يمكنك إدخال رقم هاتفك أعلاه أو الضغط على \"إنشاء حساب جديد\".",
+                                    text = "قم بإدخال رقم هاتفك للدخول ومتابعة رحلاتك وحجوزاتك بكل سهولة وأمان.",
                                     style = MaterialTheme.typography.bodySmall.copy(
                                         color = ShajeenSecondaryText,
+                                        fontWeight = FontWeight.SemiBold,
                                         fontSize = 12.sp,
-                                        lineHeight = 18.sp,
-                                        textAlign = TextAlign.Center
-                                    ),
-                                    modifier = Modifier.padding(14.dp)
+                                        lineHeight = 18.sp
+                                    )
                                 )
                             }
                         }
@@ -1012,8 +895,8 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // 9. Agency Contact Footer
-            AgencyContactFooter(settings = agencySettings)
+            // Modern Quick Contact Actions: WhatsApp, Location, Contact Us
+            LoginModernContactFooter(settings = agencySettings)
 
             Spacer(modifier = Modifier.height(16.dp))
         }
@@ -1063,6 +946,7 @@ fun LoginScreen(
                             )
                         )
                         Spacer(modifier = Modifier.height(14.dp))
+
                         OutlinedTextField(
                             value = adminPin,
                             onValueChange = {
@@ -1073,7 +957,16 @@ fun LoginScreen(
                             leadingIcon = {
                                 Icon(Icons.Default.Lock, contentDescription = null, tint = ShajeenSkyBlue)
                             },
-                            visualTransformation = PasswordVisualTransformation(),
+                            trailingIcon = {
+                                IconButton(onClick = { adminPinVisible = !adminPinVisible }) {
+                                    Icon(
+                                        imageVector = if (adminPinVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+                                        contentDescription = "إظهار الرمز",
+                                        tint = ShajeenSkyBlue
+                                    )
+                                }
+                            },
+                            visualTransformation = if (adminPinVisible) androidx.compose.ui.text.input.VisualTransformation.None else PasswordVisualTransformation(),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                             isError = adminPinError,
                             supportingText = {
@@ -1132,6 +1025,446 @@ fun LoginScreen(
                         Text("إلغاء", color = ShajeenSecondaryText)
                     }
                 }
+            )
+        }
+    }
+}
+
+@Composable
+fun ModernLoginHeroHeader(
+    onOwnerLoginClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(26.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF071B34)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        border = BorderStroke(1.5.dp, Brush.horizontalGradient(
+            colors = listOf(
+                ShajeenGold.copy(alpha = 0.5f),
+                ShajeenSkyBlue.copy(alpha = 0.4f),
+                ShajeenGold.copy(alpha = 0.5f)
+            )
+        ))
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFF091F3C),
+                            Color(0xFF0E2C52),
+                            Color(0xFF07172C)
+                        )
+                    )
+                )
+                .padding(20.dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Top Row: Official License Badge & Discreet Admin Entry
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    // Modern Official Agency Badge
+                    Surface(
+                        shape = RoundedCornerShape(20.dp),
+                        color = Color.White.copy(alpha = 0.12f),
+                        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.25f))
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(8.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0xFF10B981))
+                            )
+                            Spacer(modifier = Modifier.width(7.dp))
+                            Text(
+                                text = "وكالة معتمدة ومرخصة رسمياً",
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    color = Color.White,
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                        }
+                    }
+
+                    // Discreet, sleek Admin Portal button
+                    Surface(
+                        shape = RoundedCornerShape(14.dp),
+                        color = ShajeenGold,
+                        shadowElevation = 3.dp,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(14.dp))
+                            .clickable { onOwnerLoginClick() }
+                            .testTag("admin_login_header_btn")
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Lock,
+                                contentDescription = null,
+                                tint = ShajeenDarkBlue,
+                                modifier = Modifier.size(14.dp)
+                            )
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Text(
+                                text = "بوابة الإدارة",
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    color = ShajeenDarkBlue,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    fontSize = 11.5.sp
+                                )
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(18.dp))
+
+                // Modern Official Agency Logo Emblem
+                Surface(
+                    shape = RoundedCornerShape(22.dp),
+                    color = Color.White,
+                    border = BorderStroke(1.5.dp, ShajeenSkyBlue.copy(alpha = 0.4f)),
+                    modifier = Modifier.size(width = 160.dp, height = 130.dp),
+                    shadowElevation = 8.dp
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.img_shajeen_logo),
+                        contentDescription = "شعار وكالة شجين للسفريات والسياحة",
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(12.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Brand Name in high-contrast crisp bold Arabic
+                Text(
+                    text = "وكالة شجين للسفريات والسياحة",
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        color = Color.White,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 21.5.sp,
+                        letterSpacing = 0.5.sp
+                    ),
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                // English Sub-brand
+                Text(
+                    text = "SHAJEEN TRAVEL & TOURISM",
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = Color(0xFF7DD3FC),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp,
+                        letterSpacing = 1.2.sp
+                    ),
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = "خدمات حجز الطيران، الحج والعمرة، وتأشيرات السفر حول العالم",
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = Color(0xFFE2E8F0),
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 11.5.sp
+                    ),
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(14.dp))
+
+                // Modern Highlights Badges Row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally)
+                ) {
+                    ModernHeaderPill("✈️ رحلات طيران")
+                    ModernHeaderPill("🕋 حج وعمرة")
+                    ModernHeaderPill("🛂 جوازات وتأشيرات")
+                    ModernHeaderPill("🏨 فنادق وسياحة")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ModernHeaderPill(label: String) {
+    Surface(
+        shape = RoundedCornerShape(10.dp),
+        color = Color.White.copy(alpha = 0.12f),
+        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.22f))
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall.copy(
+                color = Color.White,
+                fontSize = 10.5.sp,
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.padding(horizontal = 9.dp, vertical = 4.dp)
+        )
+    }
+}
+
+@Composable
+fun LoginModernContactFooter(
+    settings: AgencySettingsEntity?,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    var showAddressDialog by remember { mutableStateOf(false) }
+
+    val rawAddress = settings?.address ?: "صنعاء - شارع خولان - جوار السلامي لمواد البناء"
+    val whatsappNumber = settings?.whatsappNumber?.ifBlank { "770038009" } ?: "770038009"
+    val callPhone = settings?.phone1?.ifBlank { "770038009" } ?: "770038009"
+
+    fun openWhatsapp() {
+        try {
+            val clean = whatsappNumber.replace("+", "").replace(" ", "").trim()
+            val url = if (clean.startsWith("967")) "https://wa.me/$clean" else "https://wa.me/967$clean"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            context.startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(context, "الواتساب: $whatsappNumber", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun openWebsiteOrLocation() {
+        try {
+            val mapUri = Uri.parse("geo:0,0?q=صنعاء+شارع+خولان+وكالة+شجين")
+            val intent = Intent(Intent.ACTION_VIEW, mapUri)
+            context.startActivity(intent)
+        } catch (e: Exception) {
+            showAddressDialog = true
+        }
+    }
+
+    fun makeCall() {
+        try {
+            val clean = callPhone.replace(" ", "").trim()
+            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$clean"))
+            context.startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(context, "الاتصال بالرقم: $callPhone", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(22.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+        border = BorderStroke(1.5.dp, Color(0xFFCBD5E1))
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(18.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "قنوات التواصل المباشر مع الوكالة",
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = ShajeenHeadingText,
+                    fontSize = 15.sp
+                )
+            )
+            Spacer(modifier = Modifier.height(3.dp))
+            Text(
+                text = "فريق خدمة العملاء متواجد لخدمتكم وإتمام حجوزاتكم بكل سرعة واحترافية",
+                style = MaterialTheme.typography.bodySmall.copy(
+                    color = ShajeenSecondaryText,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 11.5.sp
+                ),
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 3 Modern Action Cards: WhatsApp, Location/Website, Contact Us (No raw phone numbers listed)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                // 1. WhatsApp Action
+                ContactActionTile(
+                    title = "واتساب",
+                    subtitle = "محادثة فورية",
+                    icon = Icons.Default.Chat,
+                    iconTint = Color(0xFF16A34A),
+                    bgColor = Color(0xFFDCFCE7),
+                    borderColor = Color(0xFF86EFAC),
+                    onClick = { openWhatsapp() },
+                    modifier = Modifier.weight(1f)
+                )
+
+                // 2. Website & Location Action
+                ContactActionTile(
+                    title = "الموقع",
+                    subtitle = "الفرع والخريطة",
+                    icon = Icons.Default.Public,
+                    iconTint = Color(0xFF0284C7),
+                    bgColor = Color(0xFFE0F2FE),
+                    borderColor = Color(0xFF7DD3FC),
+                    onClick = { openWebsiteOrLocation() },
+                    modifier = Modifier.weight(1f)
+                )
+
+                // 3. Call / Contact Us Action
+                ContactActionTile(
+                    title = "تواصل معنا",
+                    subtitle = "اتصال مباشر",
+                    icon = Icons.Default.Call,
+                    iconTint = Color(0xFF059669),
+                    bgColor = Color(0xFFECFDF5),
+                    borderColor = Color(0xFFA7F3D0),
+                    onClick = { makeCall() },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+    }
+
+    if (showAddressDialog) {
+        AlertDialog(
+            onDismissRequest = { showAddressDialog = false },
+            title = {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.LocationOn, contentDescription = null, tint = Color(0xFFDC2626))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("مقر وكالة شجين الرئيسي", fontWeight = FontWeight.Bold, color = ShajeenHeadingText)
+                }
+            },
+            text = {
+                Column {
+                    Text(
+                        text = rawAddress,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = ShajeenBodyText,
+                            fontWeight = FontWeight.Bold,
+                            lineHeight = 22.sp
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "أوقات الدوام: يومياً من 8 صباحاً حتى 10 مساءً",
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            color = ShajeenSecondaryText,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showAddressDialog = false
+                        try {
+                            val mapUri = Uri.parse("geo:0,0?q=صنعاء+شارع+خولان+وكالة+شجين")
+                            context.startActivity(Intent(Intent.ACTION_VIEW, mapUri))
+                        } catch (e: Exception) {
+                            // Handled
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = ShajeenSkyBlue)
+                ) {
+                    Text("عرض على الخريطة", color = Color.White, fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showAddressDialog = false }) {
+                    Text("إغلاق", color = ShajeenSecondaryText, fontWeight = FontWeight.Bold)
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun ContactActionTile(
+    title: String,
+    subtitle: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    iconTint: Color,
+    bgColor: Color,
+    borderColor: Color,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .clickable { onClick() }
+            .testTag("contact_tile_$title"),
+        color = bgColor,
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.5.dp, borderColor),
+        shadowElevation = 1.dp
+    ) {
+        Column(
+            modifier = Modifier.padding(vertical = 14.dp, horizontal = 6.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Surface(
+                shape = CircleShape,
+                color = Color.White,
+                modifier = Modifier.size(40.dp),
+                shadowElevation = 2.dp
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = title,
+                        tint = iconTint,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = title,
+                style = MaterialTheme.typography.labelMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = ShajeenHeadingText,
+                    fontSize = 13.sp
+                ),
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    color = ShajeenSecondaryText,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 10.5.sp
+                ),
+                textAlign = TextAlign.Center
             )
         }
     }

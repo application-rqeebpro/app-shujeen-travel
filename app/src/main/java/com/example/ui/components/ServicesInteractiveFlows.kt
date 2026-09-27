@@ -563,11 +563,27 @@ private fun PassportServiceFlow(
                         FilterChip(
                             selected = selected,
                             onClick = { reqType = type },
-                            label = { Text(type, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal) },
+                            label = {
+                                Text(
+                                    text = type,
+                                    fontWeight = if (selected) FontWeight.ExtraBold else FontWeight.Bold,
+                                    color = if (selected) Color.White else ShajeenHeadingText
+                                )
+                            },
                             colors = FilterChipDefaults.filterChipColors(
+                                containerColor = Color.White,
+                                labelColor = ShajeenHeadingText,
                                 selectedContainerColor = ShajeenSkyBlue,
                                 selectedLabelColor = Color.White
                             ),
+                            border = FilterChipDefaults.filterChipBorder(
+                                enabled = true,
+                                selected = selected,
+                                borderColor = if (selected) ShajeenSkyBlue else Color(0xFFCBD5E1),
+                                selectedBorderColor = ShajeenSkyBlue,
+                                borderWidth = 1.dp
+                            ),
+                            shape = RoundedCornerShape(12.dp),
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -738,11 +754,28 @@ private fun VisaApplicationFlow(
                                 FilterChip(
                                     selected = selected,
                                     onClick = { selectedVisaType = type },
-                                    label = { Text(type, fontSize = 12.sp, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal) },
+                                    label = {
+                                        Text(
+                                            text = type,
+                                            fontSize = 12.sp,
+                                            fontWeight = if (selected) FontWeight.ExtraBold else FontWeight.Bold,
+                                            color = if (selected) Color.White else ShajeenHeadingText
+                                        )
+                                    },
                                     colors = FilterChipDefaults.filterChipColors(
+                                        containerColor = Color.White,
+                                        labelColor = ShajeenHeadingText,
                                         selectedContainerColor = ShajeenSkyBlue,
                                         selectedLabelColor = Color.White
                                     ),
+                                    border = FilterChipDefaults.filterChipBorder(
+                                        enabled = true,
+                                        selected = selected,
+                                        borderColor = if (selected) ShajeenSkyBlue else Color(0xFFCBD5E1),
+                                        selectedBorderColor = ShajeenSkyBlue,
+                                        borderWidth = 1.dp
+                                    ),
+                                    shape = RoundedCornerShape(12.dp),
                                     modifier = Modifier.weight(1f)
                                 )
                             }
@@ -2043,11 +2076,28 @@ private fun BusinessVipFlow(
                         FilterChip(
                             selected = selected,
                             onClick = { requestedService = opt },
-                            label = { Text(opt, fontSize = 12.sp, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal) },
+                            label = {
+                                Text(
+                                    text = opt,
+                                    fontSize = 12.sp,
+                                    fontWeight = if (selected) FontWeight.ExtraBold else FontWeight.Bold,
+                                    color = if (selected) Color.White else ShajeenHeadingText
+                                )
+                            },
                             colors = FilterChipDefaults.filterChipColors(
+                                containerColor = Color.White,
+                                labelColor = ShajeenHeadingText,
                                 selectedContainerColor = ShajeenDarkBlue,
                                 selectedLabelColor = Color.White
                             ),
+                            border = FilterChipDefaults.filterChipBorder(
+                                enabled = true,
+                                selected = selected,
+                                borderColor = if (selected) ShajeenDarkBlue else Color(0xFFCBD5E1),
+                                selectedBorderColor = ShajeenDarkBlue,
+                                borderWidth = 1.dp
+                            ),
+                            shape = RoundedCornerShape(12.dp),
                             modifier = Modifier.fillMaxWidth()
                         )
                     }

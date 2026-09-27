@@ -56,10 +56,13 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+import com.example.ui.components.AgencyOwnerPortalCard
+
 @Composable
 fun ProfileScreen(
     currentClient: ClientEntity?,
     agencySettings: AgencySettingsEntity?,
+    onOwnerLoginClick: () -> Unit = {},
     onLogout: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -226,6 +229,13 @@ fun ProfileScreen(
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Agency Owner Portal Quick Card ("بوابة مالك الوكالة")
+            AgencyOwnerPortalCard(
+                onOwnerLoginClick = onOwnerLoginClick
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 

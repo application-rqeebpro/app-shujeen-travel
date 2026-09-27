@@ -50,64 +50,64 @@ val Typography = Typography(
     titleLarge = TextStyle(
         fontFamily = CairoFontFamily,
         fontWeight = FontWeight.Bold, // 700 Bold for main titles
-        fontSize = 19.sp,
-        lineHeight = 26.sp,
+        fontSize = 20.sp,
+        lineHeight = 28.sp,
         color = ShajeenHeadingText
     ),
     titleMedium = TextStyle(
         fontFamily = CairoFontFamily,
-        fontWeight = FontWeight.SemiBold, // 600 SemiBold for subtitles
-        fontSize = 16.sp,
+        fontWeight = FontWeight.Bold, // Bold for section subtitles
+        fontSize = 17.sp,
         lineHeight = 24.sp,
         color = ShajeenHeadingText
     ),
     titleSmall = TextStyle(
         fontFamily = CairoFontFamily,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
+        fontWeight = FontWeight.Bold,
+        fontSize = 15.sp,
+        lineHeight = 22.sp,
         color = ShajeenHeadingText
     ),
     bodyLarge = TextStyle(
         fontFamily = CairoFontFamily,
-        fontWeight = FontWeight.Normal, // 400 Regular
+        fontWeight = FontWeight.Medium, // Medium for sharp readability
         fontSize = 15.sp,
-        lineHeight = 22.sp,
+        lineHeight = 23.sp,
         color = ShajeenBodyText
     ),
     bodyMedium = TextStyle(
         fontFamily = CairoFontFamily,
-        fontWeight = FontWeight.Normal, // 400 Regular
-        fontSize = 13.sp,
-        lineHeight = 20.sp,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        lineHeight = 21.sp,
         color = ShajeenBodyText
     ),
     bodySmall = TextStyle(
         fontFamily = CairoFontFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
+        fontWeight = FontWeight.Medium,
+        fontSize = 12.5.sp,
+        lineHeight = 18.sp,
         color = ShajeenSecondaryText
     ),
     labelLarge = TextStyle(
         fontFamily = CairoFontFamily,
-        fontWeight = FontWeight.SemiBold, // 600 SemiBold for buttons
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
+        fontWeight = FontWeight.Bold, // Bold for buttons
+        fontSize = 15.sp,
+        lineHeight = 22.sp,
         color = ShajeenButtonText
     ),
     labelMedium = TextStyle(
         fontFamily = CairoFontFamily,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
+        fontWeight = FontWeight.Bold,
+        fontSize = 13.sp,
+        lineHeight = 18.sp,
         color = ShajeenHeadingText
     ),
     labelSmall = TextStyle(
         fontFamily = CairoFontFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 14.sp,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 11.5.sp,
+        lineHeight = 16.sp,
         color = ShajeenSecondaryText
     )
 )

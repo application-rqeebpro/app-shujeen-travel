@@ -7,6 +7,8 @@ import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -136,23 +138,57 @@ fun ElectronicBookingsAdminTab(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            val isSubBookings = (selectedSubTab == "الحجوزات")
             FilterChip(
-                selected = (selectedSubTab == "الحجوزات"),
+                selected = isSubBookings,
                 onClick = { selectedSubTab = "الحجوزات" },
-                label = { Text("الحجوزات الإلكترونية (${bookings.size})", fontWeight = FontWeight.Bold) },
+                label = {
+                    Text(
+                        text = "الحجوزات الإلكترونية (${bookings.size})",
+                        fontWeight = if (isSubBookings) FontWeight.ExtraBold else FontWeight.Bold,
+                        color = if (isSubBookings) Color.White else ShajeenHeadingText
+                    )
+                },
                 colors = FilterChipDefaults.filterChipColors(
+                    containerColor = Color.White,
+                    labelColor = ShajeenHeadingText,
                     selectedContainerColor = ShajeenPrimaryButton,
                     selectedLabelColor = Color.White
-                )
+                ),
+                border = FilterChipDefaults.filterChipBorder(
+                    enabled = true,
+                    selected = isSubBookings,
+                    borderColor = if (isSubBookings) ShajeenPrimaryButton else Color(0xFFCBD5E1),
+                    selectedBorderColor = ShajeenPrimaryButton,
+                    borderWidth = 1.dp
+                ),
+                shape = RoundedCornerShape(12.dp)
             )
+            val isSubWallets = (selectedSubTab == "المحافظ والبيانات")
             FilterChip(
-                selected = (selectedSubTab == "المحافظ والبيانات"),
+                selected = isSubWallets,
                 onClick = { selectedSubTab = "المحافظ والبيانات" },
-                label = { Text("إدارة المحافظ (${wallets.size})", fontWeight = FontWeight.Bold) },
+                label = {
+                    Text(
+                        text = "إدارة المحافظ (${wallets.size})",
+                        fontWeight = if (isSubWallets) FontWeight.ExtraBold else FontWeight.Bold,
+                        color = if (isSubWallets) Color.White else ShajeenHeadingText
+                    )
+                },
                 colors = FilterChipDefaults.filterChipColors(
+                    containerColor = Color.White,
+                    labelColor = ShajeenHeadingText,
                     selectedContainerColor = ShajeenPrimaryButton,
                     selectedLabelColor = Color.White
-                )
+                ),
+                border = FilterChipDefaults.filterChipBorder(
+                    enabled = true,
+                    selected = isSubWallets,
+                    borderColor = if (isSubWallets) ShajeenPrimaryButton else Color(0xFFCBD5E1),
+                    selectedBorderColor = ShajeenPrimaryButton,
+                    borderWidth = 1.dp
+                ),
+                shape = RoundedCornerShape(12.dp)
             )
         }
 
@@ -161,18 +197,37 @@ fun ElectronicBookingsAdminTab(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 statusFilters.forEach { filter ->
+                    val isFilterSel = (selectedFilter == filter)
                     FilterChip(
-                        selected = (selectedFilter == filter),
+                        selected = isFilterSel,
                         onClick = { selectedFilter = filter },
-                        label = { Text(filter, fontSize = 11.sp) },
+                        label = {
+                            Text(
+                                text = filter,
+                                fontSize = 12.sp,
+                                fontWeight = if (isFilterSel) FontWeight.ExtraBold else FontWeight.Bold,
+                                color = if (isFilterSel) Color.White else ShajeenHeadingText
+                            )
+                        },
                         colors = FilterChipDefaults.filterChipColors(
+                            containerColor = Color.White,
+                            labelColor = ShajeenHeadingText,
                             selectedContainerColor = ShajeenDarkBlue,
                             selectedLabelColor = Color.White
-                        )
+                        ),
+                        border = FilterChipDefaults.filterChipBorder(
+                            enabled = true,
+                            selected = isFilterSel,
+                            borderColor = if (isFilterSel) ShajeenDarkBlue else Color(0xFFCBD5E1),
+                            selectedBorderColor = ShajeenDarkBlue,
+                            borderWidth = 1.dp
+                        ),
+                        shape = RoundedCornerShape(12.dp)
                     )
                 }
             }

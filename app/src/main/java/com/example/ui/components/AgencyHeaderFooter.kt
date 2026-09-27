@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -337,19 +338,18 @@ fun AgencyBrandLogo(
     ) {
         Surface(
             modifier = Modifier.size(size.dp),
-            shape = CircleShape,
+            shape = RoundedCornerShape(10.dp),
             color = Color.White,
             shadowElevation = 2.dp,
             border = BorderStroke(1.dp, ShajeenSkyBlue.copy(alpha = 0.35f))
         ) {
             Box(
-                modifier = Modifier.padding(4.dp),
+                modifier = Modifier.padding(3.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_shajeen_emblem),
+                Image(
+                    painter = painterResource(id = R.drawable.img_shajeen_logo),
                     contentDescription = "شعار وكالة شجين للسفريات والسياحة",
-                    tint = Color.Unspecified,
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -411,17 +411,24 @@ fun OfficialShajeenLogoCard(
             modifier = Modifier.padding(vertical = 18.dp, horizontal = 14.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // The soaring airplane and aerodynamic wave ribbons emblem
-            Box(
-                modifier = Modifier.size((width * 0.48).dp),
-                contentAlignment = Alignment.Center
+            // The official luxury agency logo emblem
+            Surface(
+                modifier = Modifier.size(width = 160.dp, height = 110.dp),
+                shape = RoundedCornerShape(16.dp),
+                color = Color.White,
+                shadowElevation = 3.dp,
+                border = BorderStroke(1.dp, ShajeenSkyBlue.copy(alpha = 0.35f))
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_shajeen_emblem),
-                    contentDescription = "شعار شجين",
-                    tint = Color.Unspecified,
-                    modifier = Modifier.fillMaxSize()
-                )
+                Box(
+                    modifier = Modifier.padding(8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.img_shajeen_logo),
+                        contentDescription = "شعار شجين",
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(10.dp))

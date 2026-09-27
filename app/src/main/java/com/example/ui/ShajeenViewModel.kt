@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 enum class AppScreen {
+    SPLASH,
     LOGIN,
     DASHBOARD,
     ELECTRONIC_BOOKING,
@@ -42,7 +43,7 @@ class ShajeenViewModel(application: Application) : AndroidViewModel(application)
     }
 
     // Current Screen & Auth State
-    private val _currentScreen = MutableStateFlow(AppScreen.LOGIN)
+    private val _currentScreen = MutableStateFlow(AppScreen.SPLASH)
     val currentScreen: StateFlow<AppScreen> = _currentScreen.asStateFlow()
 
     private val _currentClient = MutableStateFlow<ClientEntity?>(null)
