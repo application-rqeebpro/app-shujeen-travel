@@ -42,6 +42,22 @@ class ShajeenViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    // Language State (Bilingual Arabic / English & RTL / LTR)
+    private val _currentLanguage = MutableStateFlow(com.example.ui.locale.AppLanguage.ARABIC)
+    val currentLanguage: StateFlow<com.example.ui.locale.AppLanguage> = _currentLanguage.asStateFlow()
+
+    fun setLanguage(language: com.example.ui.locale.AppLanguage) {
+        _currentLanguage.value = language
+    }
+
+    fun toggleLanguage() {
+        _currentLanguage.value = if (_currentLanguage.value == com.example.ui.locale.AppLanguage.ARABIC) {
+            com.example.ui.locale.AppLanguage.ENGLISH
+        } else {
+            com.example.ui.locale.AppLanguage.ARABIC
+        }
+    }
+
     // Current Screen & Auth State
     private val _currentScreen = MutableStateFlow(AppScreen.SPLASH)
     val currentScreen: StateFlow<AppScreen> = _currentScreen.asStateFlow()
@@ -82,14 +98,23 @@ class ShajeenViewModel(application: Application) : AndroidViewModel(application)
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
-    // Filtered Services for UI
+    // Filtered Services for UI (supports both Arabic and English category names)
     val filteredServices: StateFlow<List<TravelServiceEntity>> = combine(
         allServices,
         _selectedCategory,
         _searchQuery
     ) { services, category, query ->
         services.filter { service ->
-            val matchesCategory = (category == "الكل" || service.category == category)
+            val isAll = (category == "الكل" || category.equals("All", ignoreCase = true) || category.isBlank())
+            val matchesCategory = isAll || service.category.equals(category, ignoreCase = true) ||
+                (category.contains("طيران") || category.equals("Flights", ignoreCase = true)) && service.category.contains("طيران") ||
+                (category.contains("تأشير") || category.equals("Visas", ignoreCase = true) || category.contains("Permits", ignoreCase = true)) && service.category.contains("تأشير") ||
+                (category.contains("فندق") || category.contains("فنادق") || category.equals("Hotels", ignoreCase = true)) && service.category.contains("فندق") ||
+                (category.contains("سياح") || category.equals("Tourism", ignoreCase = true) || category.contains("Tour", ignoreCase = true)) && service.category.contains("سياح") ||
+                (category.contains("حج") || category.contains("عمرة") || category.contains("Hajj", ignoreCase = true) || category.contains("Umrah", ignoreCase = true)) && (service.category.contains("حج") || service.category.contains("عمرة")) ||
+                (category.contains("برية") || category.contains("بري") || category.contains("Land", ignoreCase = true)) && service.category.contains("بري") ||
+                (category.contains("جواز") || category.equals("Passports", ignoreCase = true)) && service.category.contains("جواز")
+
             val matchesQuery = query.isBlank() ||
                 service.title.contains(query, ignoreCase = true) ||
                 service.description.contains(query, ignoreCase = true) ||

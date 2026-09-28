@@ -29,7 +29,7 @@ class GreetingScreenshotTest {
           agencySettings = AgencySettingsEntity(),
           onRegisterOrLogin = { _, _, _, _, _, _, _, _ -> },
           onQuickPhoneLogin = {},
-          onAdminLogin = {}
+          onAdminLogin = { _, _ -> }
         )
       }
     }

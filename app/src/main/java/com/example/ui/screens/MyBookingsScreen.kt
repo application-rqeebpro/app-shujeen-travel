@@ -86,6 +86,7 @@ fun MyBookingsScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val strings = com.example.ui.locale.LocalAppStrings.current
     var selectedTab by remember { mutableStateOf("الحجز الإلكتروني") } // "الحجز الإلكتروني" or "حجوزات الخدمات"
     var viewingElectronicBooking by remember { mutableStateOf<ElectronicBookingEntity?>(null) }
 
@@ -111,14 +112,14 @@ fun MyBookingsScreen(
             ) {
                 Column {
                     Text(
-                        text = "سجل حجوزاتي وطلباتي",
+                        text = strings.myBookingsTitle,
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
                             color = ShajeenHeadingText
                         )
                     )
                     Text(
-                        text = "متابعة حالة التأشيرات وطلبات السفر والعمرة",
+                        text = strings.bookingStatus,
                         style = MaterialTheme.typography.bodySmall.copy(color = ShajeenSecondaryText)
                     )
                 }

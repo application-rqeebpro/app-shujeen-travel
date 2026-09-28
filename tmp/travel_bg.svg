@@ -1,0 +1,195 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920">
+  <defs>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#EAF6FD"/>
+      <stop offset="35%" stop-color="#F3FAFE"/>
+      <stop offset="70%" stop-color="#FAFCFF"/>
+      <stop offset="100%" stop-color="#FFFFFF"/>
+    </linearGradient>
+
+    <linearGradient id="planeTrail1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#159BD3" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#159BD3" stop-opacity="0.05"/>
+    </linearGradient>
+
+    <linearGradient id="planeTrail2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0B2545" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#159BD3" stop-opacity="0.04"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky gradient base background -->
+  <rect width="1080" height="1920" fill="url(#skyGrad)"/>
+
+  <!-- ============================================== -->
+  <!-- 1. FLIGHT TRAILS (DASHED CURVES ACROSS SCREEN) -->
+  <!-- ============================================== -->
+  <!-- Long flight arc 1 -->
+  <path d="M -80 320 Q 380 120 750 360 T 1160 220"
+        fill="none" stroke="#159BD3" stroke-width="3" stroke-dasharray="16,16" opacity="0.22"/>
+
+  <!-- Long flight arc 2 -->
+  <path d="M 1150 780 Q 720 620 400 900 T -100 820"
+        fill="none" stroke="#159BD3" stroke-width="2.5" stroke-dasharray="12,12" opacity="0.18"/>
+
+  <!-- Long flight arc 3 (lower) -->
+  <path d="M -50 1480 Q 420 1280 860 1520 T 1150 1400"
+        fill="none" stroke="#0B2545" stroke-width="2" stroke-dasharray="14,14" opacity="0.12"/>
+
+  <!-- ============================================== -->
+  <!-- 2. WORLD GLOBE (TOP RIGHT, SOFT TRANSPARENT)   -->
+  <!-- ============================================== -->
+  <g transform="translate(880, 260)" stroke="#159BD3" fill="none" opacity="0.16" stroke-width="2.5">
+    <circle cx="0" cy="0" r="140"/>
+    <!-- Equator and parallels -->
+    <ellipse cx="0" cy="0" rx="140" ry="46"/>
+    <ellipse cx="0" cy="-60" rx="124" ry="32"/>
+    <ellipse cx="0" cy="60" rx="124" ry="32"/>
+    <!-- Meridians -->
+    <ellipse cx="0" cy="0" rx="46" ry="140"/>
+    <line x1="0" y1="-140" x2="0" y2="140"/>
+    <line x1="-140" y1="0" x2="140" y2="0"/>
+  </g>
+
+  <!-- ============================================== -->
+  <!-- 3. FLYING AIRPLANES SILHOUETTES                -->
+  <!-- ============================================== -->
+  <!-- Airplane 1 (Climbing northeast) -->
+  <g transform="translate(740, 360) rotate(32)" fill="#159BD3" opacity="0.24">
+    <path d="M 0 -36 L 8 -12 L 48 4 L 48 11 L 8 5 L 8 28 L 24 38 L 24 44 L 0 39 L -24 44 L -24 38 L -8 28 L -8 5 L -48 11 L -48 4 L -8 -12 Z"/>
+  </g>
+
+  <!-- Airplane 2 (Cruising northwest) -->
+  <g transform="translate(380, 890) rotate(-140)" fill="#0B2545" opacity="0.18">
+    <path d="M 0 -28 L 6 -10 L 36 3 L 36 8 L 6 4 L 6 22 L 18 30 L 18 34 L 0 30 L -18 34 L -18 30 L -6 22 L -6 4 L -36 8 L -36 3 L -6 -10 Z"/>
+  </g>
+
+  <!-- Airplane 3 (Small high flyer) -->
+  <g transform="translate(220, 180) rotate(48)" fill="#159BD3" opacity="0.2">
+    <path d="M 0 -20 L 5 -7 L 26 2 L 26 6 L 5 3 L 5 16 L 14 22 L 14 25 L 0 22 L -14 25 L -14 22 L -5 16 L -5 3 L -26 6 L -26 2 L -5 -7 Z"/>
+  </g>
+
+  <!-- ============================================== -->
+  <!-- 4. COMPASS ROSE / NAVIGATION SYMBOL            -->
+  <!-- ============================================== -->
+  <g transform="translate(180, 520)" stroke="#159BD3" fill="none" opacity="0.15">
+    <circle cx="0" cy="0" r="75" stroke-width="2"/>
+    <circle cx="0" cy="0" r="65" stroke-width="1" stroke-dasharray="4,4"/>
+    <!-- Compass points -->
+    <polygon points="0,-75 14,-14 0,0" fill="#159BD3"/>
+    <polygon points="0,-75 -14,-14 0,0" fill="#0B2545" opacity="0.4"/>
+    <polygon points="75,0 14,14 0,0" fill="#159BD3"/>
+    <polygon points="75,0 14,-14 0,0" fill="#0B2545" opacity="0.4"/>
+    <polygon points="0,75 -14,14 0,0" fill="#159BD3"/>
+    <polygon points="0,75 14,14 0,0" fill="#0B2545" opacity="0.4"/>
+    <polygon points="-75,0 -14,-14 0,0" fill="#159BD3"/>
+    <polygon points="-75,0 -14,14 0,0" fill="#0B2545" opacity="0.4"/>
+    <!-- Letters -->
+    <text x="0" y="-85" font-family="sans-serif" font-size="14" font-weight="bold" fill="#0B2545" text-anchor="middle">N</text>
+    <text x="92" y="5" font-family="sans-serif" font-size="14" font-weight="bold" fill="#0B2545" text-anchor="middle">E</text>
+    <text x="0" y="100" font-family="sans-serif" font-size="14" font-weight="bold" fill="#0B2545" text-anchor="middle">S</text>
+    <text x="-92" y="5" font-family="sans-serif" font-size="14" font-weight="bold" fill="#0B2545" text-anchor="middle">W</text>
+  </g>
+
+  <!-- ============================================== -->
+  <!-- 5. HOT AIR BALLOON (TOP LEFT)                  -->
+  <!-- ============================================== -->
+  <g transform="translate(140, 260)" stroke="#159BD3" fill="none" opacity="0.18" stroke-width="2">
+    <!-- Balloon envelope -->
+    <path d="M 0 -70 C 45 -70 55 -25 30 15 C 22 28 14 36 8 40 L -8 40 C -14 36 -22 28 -30 15 C -55 -25 -45 -70 0 -70 Z"/>
+    <!-- Vertical stripes -->
+    <path d="M 0 -70 C 18 -70 20 0 4 40 M 0 -70 C -18 -70 -20 0 -4 40"/>
+    <!-- Rigging ropes -->
+    <line x1="-8" y1="40" x2="-6" y2="52"/>
+    <line x1="8" y1="40" x2="6" y2="52"/>
+    <!-- Basket -->
+    <rect x="-8" y="52" width="16" height="12" rx="2" fill="#159BD3" opacity="0.3"/>
+  </g>
+
+  <!-- ============================================== -->
+  <!-- 6. WORLD LANDMARKS SILHOUETTES AT HORIZON      -->
+  <!-- ============================================== -->
+  <!-- Burj Khalifa Spire (Left) -->
+  <g transform="translate(100, 1100)" fill="#0B2545" opacity="0.12">
+    <!-- Spire -->
+    <rect x="38" y="0" width="4" height="70"/>
+    <polygon points="40,0 36,70 44,70"/>
+    <!-- Tier 1 -->
+    <rect x="34" y="70" width="12" height="60" rx="2"/>
+    <!-- Tier 2 -->
+    <rect x="28" y="130" width="24" height="70" rx="3"/>
+    <!-- Tier 3 -->
+    <rect x="20" y="200" width="40" height="90" rx="4"/>
+    <!-- Base -->
+    <rect x="10" y="290" width="60" height="110" rx="5"/>
+  </g>
+
+  <!-- Holy Kaaba (Center Right) -->
+  <g transform="translate(860, 1260)" fill="#0B2545" opacity="0.13">
+    <rect x="0" y="0" width="90" height="85" rx="6"/>
+    <!-- Golden Kiswah Belt line -->
+    <rect x="0" y="20" width="90" height="12" fill="#D6A84F" opacity="0.6"/>
+  </g>
+
+  <!-- Eiffel Tower (Far Right) -->
+  <g transform="translate(970, 960)" stroke="#159BD3" fill="none" opacity="0.14" stroke-width="2">
+    <line x1="40" y1="0" x2="40" y2="40"/>
+    <polygon points="40,40 28,140 52,140"/>
+    <line x1="24" y1="140" x2="56" y2="140" stroke-width="3"/>
+    <path d="M 28 140 L 10 240 M 52 140 L 70 240"/>
+    <!-- Arch at bottom -->
+    <path d="M 24 240 Q 40 190 56 240"/>
+    <line x1="8" y1="240" x2="72" y2="240" stroke-width="3"/>
+  </g>
+
+  <!-- ============================================== -->
+  <!-- 7. VINTAGE PASSPORT & VISA STAMPS              -->
+  <!-- ============================================== -->
+  <!-- Stamp 1: "VISA APPROVED" (Circular) -->
+  <g transform="translate(920, 680) rotate(-15)" stroke="#159BD3" fill="none" opacity="0.16">
+    <circle cx="0" cy="0" r="58" stroke-width="2.5"/>
+    <circle cx="0" cy="0" r="50" stroke-width="1" stroke-dasharray="6,4"/>
+    <text x="0" y="-18" font-family="sans-serif" font-size="11" font-weight="900" fill="#159BD3" text-anchor="middle" letter-spacing="1">TRAVEL VISA</text>
+    <line x1="-38" y1="-8" x2="38" y2="-8" stroke-width="1.5"/>
+    <text x="0" y="10" font-family="sans-serif" font-size="15" font-weight="bold" fill="#0B2545" text-anchor="middle" letter-spacing="2">APPROVED</text>
+    <line x1="-38" y1="18" x2="38" y2="18" stroke-width="1.5"/>
+    <text x="0" y="34" font-family="sans-serif" font-size="9" font-weight="bold" fill="#159BD3" text-anchor="middle">SHAJEEN AGENCY</text>
+  </g>
+
+  <!-- Stamp 2: "DEPARTURE" (Octagonal / Hexagonal) -->
+  <g transform="translate(180, 1380) rotate(12)" stroke="#0B2545" fill="none" opacity="0.14">
+    <rect x="-55" y="-35" width="110" height="70" rx="14" stroke-width="2"/>
+    <text x="0" y="-10" font-family="sans-serif" font-size="11" font-weight="bold" fill="#0B2545" text-anchor="middle">PASSPORT CONTROL</text>
+    <text x="0" y="14" font-family="sans-serif" font-size="16" font-weight="900" fill="#159BD3" text-anchor="middle">★ DEPARTURE ★</text>
+  </g>
+
+  <!-- ============================================== -->
+  <!-- 8. LUGGAGE / SUITCASE ICON                     -->
+  <!-- ============================================== -->
+  <g transform="translate(130, 940) rotate(-8)" stroke="#159BD3" fill="none" opacity="0.16" stroke-width="2">
+    <!-- Suitcase body -->
+    <rect x="-35" y="-24" width="70" height="48" rx="8"/>
+    <!-- Handle -->
+    <path d="M -14 -24 L -14 -36 C -14 -40 14 -40 14 -36 L 14 -24"/>
+    <!-- Straps / details -->
+    <line x1="-16" y1="-24" x2="-16" y2="24"/>
+    <line x1="16" y1="-24" x2="16" y2="24"/>
+    <!-- Corner reinforcements -->
+    <circle cx="-28" cy="18" r="3" fill="#159BD3"/>
+    <circle cx="28" cy="18" r="3" fill="#159BD3"/>
+  </g>
+
+  <!-- ============================================== -->
+  <!-- 9. PALM OASIS SILHOUETTE (BOTTOM RIGHT)        -->
+  <!-- ============================================== -->
+  <g transform="translate(940, 1680)" fill="#159BD3" opacity="0.12">
+    <!-- Trunk -->
+    <path d="M 0 0 Q -15 -80 -10 -150 L -4 -150 Q -9 -80 6 0 Z"/>
+    <!-- Palm fronds -->
+    <path d="M -7 -150 Q -50 -180 -90 -160 Q -50 -160 -7 -150 Z"/>
+    <path d="M -7 -150 Q -30 -210 -50 -230 Q -25 -190 -7 -150 Z"/>
+    <path d="M -7 -150 Q 20 -220 50 -220 Q 20 -185 -7 -150 Z"/>
+    <path d="M -7 -150 Q 60 -190 90 -160 Q 50 -160 -7 -150 Z"/>
+    <path d="M -7 -150 Q 40 -140 70 -120 Q 30 -130 -7 -150 Z"/>
+  </g>
+</svg>

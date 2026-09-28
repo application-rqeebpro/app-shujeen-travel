@@ -65,7 +65,7 @@ fun SplashScreen(
             targetValue = 1f,
             animationSpec = tween(durationMillis = 800)
         )
-        delay(2200L)
+        delay(1400L)
         onTimeout()
     }
 
@@ -99,13 +99,11 @@ fun SplashScreen(
                 .scale(scale.value)
                 .alpha(alpha.value)
         ) {
-            // The Official Logo Asset in Premium Card
             Surface(
                 shape = RoundedCornerShape(26.dp),
-                color = Color.White,
-                border = BorderStroke(2.dp, ShajeenSkyBlue.copy(alpha = 0.5f)),
-                shadowElevation = 14.dp,
-                modifier = Modifier.size(width = 190.dp, height = 150.dp)
+                color = Color.Transparent,
+                shadowElevation = 8.dp,
+                modifier = Modifier.size(175.dp)
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.img_shajeen_logo),
@@ -113,7 +111,6 @@ fun SplashScreen(
                     contentScale = ContentScale.Fit,
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(14.dp)
                         .testTag("splash_agency_logo")
                 )
             }
@@ -167,7 +164,19 @@ fun SplashScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Version 3.0 Badge
+            Text(
+                text = "الإصدار 3.0 • التحديث الجديد",
+                style = MaterialTheme.typography.labelSmall.copy(
+                    color = ShajeenGold.copy(alpha = 0.9f),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Elegant Loading Indicator in Gold
             CircularProgressIndicator(

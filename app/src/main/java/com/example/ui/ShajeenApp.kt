@@ -105,6 +105,9 @@ fun ShajeenApp(
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val currentLanguage by viewModel.currentLanguage.collectAsStateWithLifecycle()
+    val strings = com.example.ui.locale.getStrings(currentLanguage)
+
     val currentScreen by viewModel.currentScreen.collectAsStateWithLifecycle()
     val currentClient by viewModel.currentClient.collectAsStateWithLifecycle()
     val isAdminLoggedIn by viewModel.isAdminLoggedIn.collectAsStateWithLifecycle()
@@ -140,8 +143,12 @@ fun ShajeenApp(
         }
     }
 
-    // Mandatory RTL (Right-to-Left) Arabic layout direction support
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+    // Dynamic RTL/LTR layout direction & localized strings support
+    CompositionLocalProvider(
+        LocalLayoutDirection provides currentLanguage.layoutDirection,
+        com.example.ui.locale.LocalAppLanguage provides currentLanguage,
+        com.example.ui.locale.LocalAppStrings provides strings
+    ) {
         Scaffold(
             modifier = modifier.fillMaxSize(),
             snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -162,13 +169,13 @@ fun ShajeenApp(
                             icon = {
                                 Icon(
                                     imageVector = if (currentScreen == AppScreen.PROFILE) Icons.Filled.Person else Icons.Outlined.Person,
-                                    contentDescription = "الحساب",
+                                    contentDescription = strings.navProfile,
                                     modifier = Modifier.size(24.dp)
                                 )
                             },
                             label = {
                                 Text(
-                                    text = "الحساب",
+                                    text = strings.navProfile,
                                     fontSize = 11.sp,
                                     fontWeight = if (currentScreen == AppScreen.PROFILE) FontWeight.Bold else FontWeight.Normal
                                 )
@@ -190,13 +197,13 @@ fun ShajeenApp(
                             icon = {
                                 Icon(
                                     imageVector = if (currentScreen == AppScreen.MY_BOOKINGS) Icons.Filled.Bookmarks else Icons.Outlined.BookmarkBorder,
-                                    contentDescription = "حجوزاتي",
+                                    contentDescription = strings.navBookings,
                                     modifier = Modifier.size(24.dp)
                                 )
                             },
                             label = {
                                 Text(
-                                    text = "حجوزاتي",
+                                    text = strings.navBookings,
                                     fontSize = 11.sp,
                                     fontWeight = if (currentScreen == AppScreen.MY_BOOKINGS) FontWeight.Bold else FontWeight.Normal
                                 )
@@ -226,7 +233,7 @@ fun ShajeenApp(
                                     Box(contentAlignment = Alignment.Center) {
                                         Icon(
                                             imageVector = Icons.Filled.Home,
-                                            contentDescription = "الرئيسية",
+                                            contentDescription = strings.navHome,
                                             tint = if (isHomeSelected) Color.White else ShajeenSkyBlue,
                                             modifier = Modifier.size(26.dp)
                                         )
@@ -235,7 +242,7 @@ fun ShajeenApp(
                             },
                             label = {
                                 Text(
-                                    text = "الرئيسية",
+                                    text = strings.navHome,
                                     fontSize = 11.sp,
                                     fontWeight = FontWeight.ExtraBold,
                                     color = ShajeenSkyBlue
@@ -254,19 +261,19 @@ fun ShajeenApp(
                             selected = false,
                             onClick = {
                                 viewModel.navigateTo(AppScreen.DASHBOARD)
-                                viewModel.setCategory("البرامج السياحية")
-                                Toast.makeText(context, "استعراض أحدث عروض وكالة شجين", Toast.LENGTH_SHORT).show()
+                                viewModel.setCategory(strings.categoryTourism)
+                                Toast.makeText(context, strings.sectionOffers, Toast.LENGTH_SHORT).show()
                             },
                             icon = {
                                 Icon(
                                     imageVector = Icons.Outlined.Star,
-                                    contentDescription = "العروض",
+                                    contentDescription = strings.navOffers,
                                     modifier = Modifier.size(24.dp)
                                 )
                             },
                             label = {
                                 Text(
-                                    text = "العروض",
+                                    text = strings.navOffers,
                                     fontSize = 11.sp,
                                     fontWeight = FontWeight.Normal
                                 )
@@ -293,13 +300,13 @@ fun ShajeenApp(
                             icon = {
                                 Icon(
                                     imageVector = if (isAdminLoggedIn) Icons.Filled.AdminPanelSettings else Icons.Outlined.MoreHoriz,
-                                    contentDescription = "المزيد",
+                                    contentDescription = if (isAdminLoggedIn) strings.navAdmin else strings.navMore,
                                     modifier = Modifier.size(24.dp)
                                 )
                             },
                             label = {
                                 Text(
-                                    text = if (isAdminLoggedIn) "لوحة المالك" else "المزيد",
+                                    text = if (isAdminLoggedIn) strings.navAdmin else strings.navMore,
                                     fontSize = 11.sp,
                                     fontWeight = if (isAdminScreen) FontWeight.Bold else FontWeight.Normal
                                 )
@@ -337,6 +344,8 @@ fun ShajeenApp(
                         LoginScreen(
                             agencySettings = agencySettings,
                             allClients = allClients,
+                            currentLanguage = currentLanguage,
+                            onLanguageSelected = { viewModel.setLanguage(it) },
                             onRegisterOrLogin = { name, phone, idType, idNum, country, city, dist, area ->
                                 viewModel.registerOrLoginClient(
                                     name, phone, idType, idNum, country, city, dist, area
@@ -362,6 +371,13 @@ fun ShajeenApp(
                                         Toast.makeText(context, "رمز المرور غير صحيح", Toast.LENGTH_SHORT).show()
                                     }
                                 }
+                            },
+                            onOpenService = { category ->
+                                viewModel.setCategory(category)
+                                viewModel.navigateTo(AppScreen.DASHBOARD)
+                            },
+                            onOpenElectronicBooking = {
+                                viewModel.navigateTo(AppScreen.ELECTRONIC_BOOKING)
                             }
                         )
                     }
@@ -374,6 +390,8 @@ fun ShajeenApp(
                             services = filteredServices,
                             selectedCategory = selectedCategory,
                             searchQuery = searchQuery,
+                            currentLanguage = currentLanguage,
+                            onLanguageSelected = { viewModel.setLanguage(it) },
                             onCategorySelected = { viewModel.setCategory(it) },
                             onSearchChanged = { viewModel.setSearchQuery(it) },
                             onBookService = { service, date, passengers, notes ->
@@ -459,6 +477,8 @@ fun ShajeenApp(
                         ProfileScreen(
                             currentClient = currentClient,
                             agencySettings = agencySettings,
+                            currentLanguage = currentLanguage,
+                            onLanguageSelected = { viewModel.setLanguage(it) },
                             onOwnerLoginClick = {
                                 if (isAdminLoggedIn) {
                                     viewModel.navigateTo(AppScreen.ADMIN)
@@ -563,7 +583,7 @@ fun ShajeenApp(
                         }
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
-                            text = "بوابة مالك الوكالة",
+                            text = strings.agencyOwnerPortal,
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold,
                                 color = ShajeenHeadingText
@@ -574,7 +594,7 @@ fun ShajeenApp(
                 text = {
                     Column {
                         Text(
-                            text = "أدخل رمز المرور السري للدخول إلى لوحة تحكم المالك وإدارة الحجوزات والخدمات والطلبات.",
+                            text = strings.agencyOwnerPortalDesc,
                             style = MaterialTheme.typography.bodySmall.copy(
                                 color = ShajeenSecondaryText,
                                 lineHeight = 18.sp
@@ -588,7 +608,7 @@ fun ShajeenApp(
                                 adminPinInput = it
                                 adminPinHasError = false
                             },
-                            label = { Text("رمز المرور السري") },
+                            label = { Text(strings.pinPlaceholder) },
                             leadingIcon = {
                                 Icon(Icons.Default.Lock, contentDescription = null, tint = ShajeenSkyBlue)
                             },
@@ -596,7 +616,7 @@ fun ShajeenApp(
                                 IconButton(onClick = { adminPinInputVisible = !adminPinInputVisible }) {
                                     Icon(
                                         imageVector = if (adminPinInputVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
-                                        contentDescription = "إظهار الرمز",
+                                        contentDescription = "PIN",
                                         tint = ShajeenSkyBlue
                                     )
                                 }
@@ -631,7 +651,7 @@ fun ShajeenApp(
                                         showGlobalAdminDialog = false
                                         adminPinInput = ""
                                         adminPinHasError = false
-                                        Toast.makeText(context, "تم الدخول إلى لوحة تحكم المالك", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context, "تم الدخول بنجاح", Toast.LENGTH_SHORT).show()
                                     } else {
                                         adminPinHasError = true
                                     }
@@ -646,7 +666,7 @@ fun ShajeenApp(
                         ),
                         shape = RoundedCornerShape(10.dp)
                     ) {
-                        Text("دخول")
+                        Text(strings.verifyPin)
                     }
                 },
                 dismissButton = {
@@ -657,7 +677,7 @@ fun ShajeenApp(
                             adminPinHasError = false
                         }
                     ) {
-                        Text("إلغاء", color = ShajeenSecondaryText)
+                        Text(strings.cancel, color = ShajeenSecondaryText)
                     }
                 }
             )

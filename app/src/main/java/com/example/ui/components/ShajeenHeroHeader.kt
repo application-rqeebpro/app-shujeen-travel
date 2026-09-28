@@ -2,7 +2,10 @@ package com.example.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.ui.res.painterResource
+import com.example.R
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -58,6 +61,8 @@ import com.example.ui.theme.ShajeenSkyBlue
  */
 @Composable
 fun ShajeenReferenceTopBar(
+    currentLanguage: com.example.ui.locale.AppLanguage = com.example.ui.locale.LocalAppLanguage.current,
+    onLanguageSelected: (com.example.ui.locale.AppLanguage) -> Unit = {},
     onMenuClick: () -> Unit = {},
     onSearchClick: () -> Unit = {},
     onSupportClick: () -> Unit = {},
@@ -65,6 +70,8 @@ fun ShajeenReferenceTopBar(
     hasUnreadNotifications: Boolean = true,
     modifier: Modifier = Modifier
 ) {
+    val strings = com.example.ui.locale.LocalAppStrings.current
+
     Surface(
         modifier = modifier
             .fillMaxWidth()
@@ -74,7 +81,7 @@ fun ShajeenReferenceTopBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(horizontal = 12.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -87,7 +94,7 @@ fun ShajeenReferenceTopBar(
             ) {
                 Icon(
                     imageVector = Icons.Default.Menu,
-                    contentDescription = "القائمة",
+                    contentDescription = strings.menu,
                     tint = ShajeenDarkBlue,
                     modifier = Modifier.size(26.dp)
                 )
@@ -97,94 +104,89 @@ fun ShajeenReferenceTopBar(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Official Shajeen Emblem lines
-                Canvas(modifier = Modifier.size(32.dp, 28.dp)) {
-                    val w = size.width
-                    val h = size.height
-                    // Ascending curved lines
-                    val lineColors = listOf(
-                        Color(0xFF0288D1),
-                        Color(0xFF0277BD),
-                        Color(0xFF01579B),
-                        Color(0xFF0C2340)
-                    )
-                    for (i in 0 until 4) {
-                        val y = h * (0.2f + i * 0.22f)
-                        val strokeW = 3.5f
-                        drawLine(
-                            color = lineColors[i],
-                            start = Offset(w * (0.15f + i * 0.08f), y),
-                            end = Offset(w * 0.9f, y - 4f),
-                            strokeWidth = strokeW
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.width(8.dp))
+                // Official Shajeen Logo
+                Image(
+                    painter = painterResource(id = R.drawable.img_shajeen_logo),
+                    contentDescription = strings.agencyName,
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .testTag("top_bar_official_logo")
+                )
+                Spacer(modifier = Modifier.width(6.dp))
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = "وكالة شجين",
+                        text = strings.agencyName,
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Black,
                             color = ShajeenDarkBlue,
-                            fontSize = 17.sp,
-                            letterSpacing = 0.5.sp
+                            fontSize = 15.sp,
+                            letterSpacing = 0.3.sp
                         )
                     )
                     Text(
-                        text = "للسفريات والسياحة",
+                        text = strings.agencySubtitle,
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontWeight = FontWeight.Bold,
                             color = ShajeenSkyBlue,
-                            fontSize = 9.sp
+                            fontSize = 8.5.sp
                         )
                     )
                 }
             }
 
-            // Right: Actions (Search, Support, Notifications)
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            // Right: Actions (Language Switcher Pill + Search, Support, Notifications)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                // Interactive Language Switcher Pill (1-tap toggle between Arabic and English)
+                LanguageSwitcherPill(
+                    currentLanguage = currentLanguage,
+                    onLanguageSelected = onLanguageSelected
+                )
+
                 IconButton(
                     onClick = onSearchClick,
-                    modifier = Modifier.size(36.dp)
+                    modifier = Modifier.size(32.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Search,
-                        contentDescription = "بحث",
+                        contentDescription = strings.search,
                         tint = ShajeenDarkBlue,
-                        modifier = Modifier.size(22.dp)
+                        modifier = Modifier.size(20.dp)
                     )
                 }
 
                 IconButton(
                     onClick = onSupportClick,
-                    modifier = Modifier.size(36.dp)
+                    modifier = Modifier.size(32.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Headphones,
-                        contentDescription = "خدمة العملاء",
+                        contentDescription = strings.customerSupport,
                         tint = ShajeenDarkBlue,
-                        modifier = Modifier.size(22.dp)
+                        modifier = Modifier.size(20.dp)
                     )
                 }
 
                 Box(
                     modifier = Modifier
-                        .size(36.dp)
+                        .size(32.dp)
                         .clickable { onNotificationsClick() },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.Notifications,
-                        contentDescription = "الإشعارات",
+                        contentDescription = strings.notifications,
                         tint = ShajeenDarkBlue,
-                        modifier = Modifier.size(22.dp)
+                        modifier = Modifier.size(20.dp)
                     )
                     if (hasUnreadNotifications) {
                         Box(
                             modifier = Modifier
-                                .size(8.dp)
+                                .size(7.dp)
                                 .clip(CircleShape)
                                 .background(Color(0xFF0288D1))
                                 .align(Alignment.TopEnd)
@@ -206,6 +208,8 @@ fun ShajeenHeroBannerCard(
     onDiscoverClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    val strings = com.example.ui.locale.LocalAppStrings.current
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -320,38 +324,38 @@ fun ShajeenHeroBannerCard(
                     .padding(horizontal = 20.dp, vertical = 14.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                // Top Arabic Slogan: "رحلتك تبدأ من هنا"
+                // Top Slogan
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
                 ) {
                     Column(horizontalAlignment = Alignment.End) {
                         Text(
-                            text = "رحلتك تبدأ",
+                            text = strings.heroTitle,
                             style = MaterialTheme.typography.titleLarge.copy(
                                 fontWeight = FontWeight.Black,
                                 color = ShajeenDarkBlue,
-                                fontSize = 21.sp
+                                fontSize = 18.sp
                             )
                         )
                         Text(
-                            text = "من هنا",
-                            style = MaterialTheme.typography.titleLarge.copy(
-                                fontWeight = FontWeight.Black,
+                            text = strings.heroSubtitle,
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontWeight = FontWeight.Bold,
                                 color = Color(0xFF0288D1),
-                                fontSize = 21.sp
+                                fontSize = 11.sp
                             )
                         )
                     }
                 }
 
-                // Middle English Subtitle & CTA button
+                // Middle Subtitle & CTA button
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "GLOBAL TRAVEL EXPERIENCE",
+                        text = strings.agencyExperience,
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF64748B),
@@ -359,19 +363,10 @@ fun ShajeenHeroBannerCard(
                             letterSpacing = 1.sp
                         )
                     )
-                    Text(
-                        text = "LUXURY JOURNEYS",
-                        style = MaterialTheme.typography.titleSmall.copy(
-                            fontWeight = FontWeight.ExtraBold,
-                            color = Color(0xFF0288D1),
-                            fontSize = 13.sp,
-                            letterSpacing = 1.2.sp
-                        )
-                    )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // Pill Button: "اكتشف العديد من العروض"
+                    // Pill Button: Explore Offers
                     Surface(
                         modifier = Modifier
                             .clip(RoundedCornerShape(20.dp))
@@ -382,7 +377,7 @@ fun ShajeenHeroBannerCard(
                         shadowElevation = 1.dp
                     ) {
                         Text(
-                            text = "اكتشف العديد من العروض",
+                            text = strings.heroExploreOffers,
                             style = MaterialTheme.typography.labelSmall.copy(
                                 fontWeight = FontWeight.Bold,
                                 color = ShajeenDarkBlue,

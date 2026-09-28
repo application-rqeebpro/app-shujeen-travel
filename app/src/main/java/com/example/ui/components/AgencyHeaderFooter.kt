@@ -459,7 +459,12 @@ fun OfficialShajeenLogoCard(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+// Brand colors for the Contact Card matching the Shajeen design system
+private val ContactDarkBlue = Color(0xFF0B2545)
+private val ContactPrimaryBlue = Color(0xFF159BD3)
+private val ContactLightBlue = Color(0xFFEAF7FC)
+private val ContactBorderColor = Color(0xFFE2E8F0)
+
 @Composable
 fun AgencyContactFooter(
     settings: AgencySettingsEntity?,
@@ -468,7 +473,9 @@ fun AgencyContactFooter(
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
 
-    val address = settings?.address ?: "صنعاء - شارع خولان - جوار السلامي لمواد البناء"
+    val address = settings?.address?.ifBlank { "صنعاء - شارع خولان - جوار السلامي لمواد البناء" }
+        ?: "صنعاء - شارع خولان - جوار السلامي لمواد البناء"
+    val whatsappNumber = settings?.whatsappNumber?.ifBlank { "770038009" } ?: "770038009"
     val phoneNumbers = listOf(
         settings?.phone1 ?: "+967 777779492",
         settings?.phone2 ?: "+966 551160835",
@@ -480,31 +487,33 @@ fun AgencyContactFooter(
         modifier = modifier
             .fillMaxWidth()
             .testTag("agency_contact_footer"),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(22.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        border = BorderStroke(1.dp, Color(0xFFE2E8F0))
+        border = BorderStroke(1.dp, ContactBorderColor)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(18.dp)
         ) {
-            // Header
+            // Header Row: Title & Location
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Surface(
                     shape = CircleShape,
-                    color = ShajeenSkyContainer,
-                    modifier = Modifier.size(34.dp)
+                    color = ContactLightBlue,
+                    border = BorderStroke(1.dp, ContactPrimaryBlue.copy(alpha = 0.35f)),
+                    modifier = Modifier.size(38.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
                             imageVector = Icons.Default.LocationOn,
                             contentDescription = "العنوان",
-                            tint = ShajeenSkyBlue,
-                            modifier = Modifier.size(18.dp)
+                            tint = ContactPrimaryBlue,
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 }
@@ -512,77 +521,175 @@ fun AgencyContactFooter(
                 Column {
                     Text(
                         text = "معلومات التواصل والعنوان",
-                        style = MaterialTheme.typography.titleSmall.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = ShajeenHeadingText
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.ExtraBold,
+                            color = ContactDarkBlue,
+                            fontSize = 15.5.sp
                         )
                     )
                     Text(
-                        text = "الفرع الرئيسي - صنعاء",
+                        text = "المقر الرئيسي - صنعاء",
                         style = MaterialTheme.typography.labelSmall.copy(
-                            color = ShajeenSecondaryText,
-                            fontSize = 10.sp
+                            color = ContactPrimaryBlue,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 11.5.sp
                         )
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-            // Address line
-            Text(
-                text = address,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = ShajeenHeadingText,
-                    lineHeight = 22.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            )
+            // Address Container with Location Icon
+            Surface(
+                shape = RoundedCornerShape(12.dp),
+                color = ContactLightBlue,
+                border = BorderStroke(1.dp, ContactPrimaryBlue.copy(alpha = 0.25f)),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 9.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.LocationOn,
+                        contentDescription = "الموقع",
+                        tint = ContactPrimaryBlue,
+                        modifier = Modifier.size(17.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = address,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = ContactDarkBlue,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 12.5.sp,
+                            lineHeight = 18.sp
+                        )
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(14.dp))
-            HorizontalDivider(color = Color(0xFFF1F5F9))
+            HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
             Spacer(modifier = Modifier.height(14.dp))
 
-            // Contact Numbers Label
+            // Contact Numbers Header Label
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Default.Phone,
-                    contentDescription = "أرقام التواصل",
-                    tint = ShajeenSkyBlue,
-                    modifier = Modifier.size(16.dp)
-                )
+                Surface(
+                    shape = CircleShape,
+                    color = ContactLightBlue,
+                    modifier = Modifier.size(26.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Default.Phone,
+                            contentDescription = "أرقام التواصل",
+                            tint = ContactPrimaryBlue,
+                            modifier = Modifier.size(14.dp)
+                        )
+                    }
+                }
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "أرقام خدمة العملاء والحجوزات (اضغط للاتصال المباشر):",
+                    text = "أرقام خدمة العملاء والحجوزات (الضغط للاتصال المباشر):",
                     style = MaterialTheme.typography.labelMedium.copy(
                         fontWeight = FontWeight.Bold,
-                        color = ShajeenHeadingText,
-                        fontSize = 11.5.sp
+                        color = ContactDarkBlue,
+                        fontSize = 12.sp
                     )
                 )
             }
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Flow row for phone chips
-            FlowRow(
+            // Responsive Phone Cards in 2-column rows
+            phoneNumbers.chunked(2).forEach { pair ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    pair.forEach { phone ->
+                        PhoneChip(
+                            phoneNumber = phone,
+                            onDial = { dialPhone(context, phone) },
+                            onCopy = {
+                                clipboardManager.setText(AnnotatedString(phone))
+                                Toast.makeText(context, "تم نسخ الرقم: $phone", Toast.LENGTH_SHORT).show()
+                            },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                    if (pair.size == 1) {
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            // Action Buttons: "فتح الموقع 📍" and "تواصل معنا 💬"
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                phoneNumbers.forEach { phone ->
-                    PhoneChip(
-                        phoneNumber = phone,
-                        onDial = {
-                            dialPhone(context, phone)
-                        },
-                        onCopy = {
-                            clipboardManager.setText(AnnotatedString(phone))
-                            Toast.makeText(context, "تم نسخ الرقم: $phone", Toast.LENGTH_SHORT).show()
-                        }
-                    )
+                // 1. فتح الموقع 📍
+                Surface(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(44.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable { openLocation(context, address) }
+                        .testTag("contact_btn_open_location"),
+                    color = ContactLightBlue,
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(1.2.dp, ContactPrimaryBlue.copy(alpha = 0.5f))
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "فتح الموقع 📍",
+                            style = MaterialTheme.typography.labelLarge.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = ContactDarkBlue,
+                                fontSize = 13.sp
+                            )
+                        )
+                    }
+                }
+
+                // 2. تواصل معنا 💬
+                Surface(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(44.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable { openWhatsAppContact(context, whatsappNumber) }
+                        .testTag("contact_btn_chat_whatsapp"),
+                    color = ContactPrimaryBlue,
+                    shape = RoundedCornerShape(12.dp),
+                    shadowElevation = 2.dp
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "تواصل معنا 💬",
+                            style = MaterialTheme.typography.labelLarge.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                fontSize = 13.sp
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -598,45 +705,96 @@ fun PhoneChip(
 ) {
     Surface(
         modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(12.dp))
             .clickable { onDial() }
             .testTag("phone_chip_$phoneNumber"),
-        color = ShajeenSkyContainer,
-        shape = RoundedCornerShape(20.dp),
-        border = BorderStroke(1.dp, Color(0xFFBAE6FD))
+        color = ContactLightBlue,
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(1.dp, ContactPrimaryBlue.copy(alpha = 0.3f))
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Icon(
-                imageVector = Icons.Default.Phone,
-                contentDescription = "اتصال",
-                tint = ShajeenSkyBlue,
-                modifier = Modifier.size(14.dp)
-            )
-            Spacer(modifier = Modifier.width(6.dp))
-            Text(
-                text = phoneNumber,
-                style = MaterialTheme.typography.labelMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = ShajeenDarkBlue,
-                    fontSize = 12.sp
-                )
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            IconButton(
-                onClick = onCopy,
-                modifier = Modifier.size(22.dp)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f, fill = false)
             ) {
-                Icon(
-                    imageVector = Icons.Outlined.ContentCopy,
-                    contentDescription = "نسخ الرقم",
-                    tint = ShajeenSkyBlue,
-                    modifier = Modifier.size(13.dp)
+                Surface(
+                    shape = CircleShape,
+                    color = Color.White,
+                    modifier = Modifier.size(22.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Default.Phone,
+                            contentDescription = "اتصال",
+                            tint = ContactPrimaryBlue,
+                            modifier = Modifier.size(12.dp)
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = phoneNumber,
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = ContactDarkBlue,
+                        fontSize = 11.5.sp,
+                        letterSpacing = 0.2.sp
+                    ),
+                    maxLines = 1
                 )
             }
+            Surface(
+                shape = CircleShape,
+                color = Color.White.copy(alpha = 0.9f),
+                modifier = Modifier
+                    .size(24.dp)
+                    .clip(CircleShape)
+                    .clickable { onCopy() }
+                    .testTag("copy_phone_$phoneNumber")
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Outlined.ContentCopy,
+                        contentDescription = "نسخ الرقم",
+                        tint = ContactPrimaryBlue,
+                        modifier = Modifier.size(12.dp)
+                    )
+                }
+            }
         }
+    }
+}
+
+fun openLocation(context: Context, address: String) {
+    try {
+        val geoUri = Uri.parse("geo:0,0?q=${Uri.encode(address)}")
+        val mapIntent = Intent(Intent.ACTION_VIEW, geoUri)
+        context.startActivity(mapIntent)
+    } catch (e: Exception) {
+        try {
+            val webUri = Uri.parse("https://www.google.com/maps/search/?api=1&query=${Uri.encode(address)}")
+            val webIntent = Intent(Intent.ACTION_VIEW, webUri)
+            context.startActivity(webIntent)
+        } catch (e2: Exception) {
+            Toast.makeText(context, "الموقع: $address", Toast.LENGTH_SHORT).show()
+        }
+    }
+}
+
+fun openWhatsAppContact(context: Context, whatsappNumber: String) {
+    try {
+        val clean = whatsappNumber.replace("+", "").replace(" ", "").trim()
+        val url = if (clean.startsWith("967")) "https://wa.me/$clean" else "https://wa.me/967$clean"
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        context.startActivity(intent)
+    } catch (e: Exception) {
+        Toast.makeText(context, "الواتساب: $whatsappNumber", Toast.LENGTH_SHORT).show()
     }
 }
 

@@ -96,6 +96,8 @@ fun DashboardScreen(
     services: List<TravelServiceEntity>,
     selectedCategory: String,
     searchQuery: String,
+    currentLanguage: com.example.ui.locale.AppLanguage = com.example.ui.locale.LocalAppLanguage.current,
+    onLanguageSelected: (com.example.ui.locale.AppLanguage) -> Unit = {},
     onCategorySelected: (String) -> Unit,
     onSearchChanged: (String) -> Unit,
     onBookService: (service: TravelServiceEntity, date: String, passengers: Int, notes: String) -> Unit,
@@ -114,18 +116,17 @@ fun DashboardScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val strings = com.example.ui.locale.LocalAppStrings.current
 
     val categories = listOf(
-        "الكل",
-        "طيران",
-        "جوازات",
-        "تأشيرات",
-        "فنادق",
-        "سياحة",
-        "حج وعمرة",
-        "نقل وسيارات",
-        "رجال أعمال",
-        "شحن وطرود"
+        strings.categoryAll,
+        strings.categoryFlights,
+        strings.categoryPassports,
+        strings.categoryVisas,
+        strings.categoryHotels,
+        strings.categoryTourism,
+        strings.categoryHajjUmrah,
+        strings.categoryLandTrips
     )
 
     // Interactive service flow modal state
@@ -177,14 +178,16 @@ fun DashboardScreen(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(bottom = 95.dp)
         ) {
-            // 1. Top Reference Header (Hamburger, Logo, Search, Headphones, Notifications)
+            // 1. Top Reference Header (Hamburger, Logo, Search, Headphones, Notifications, LanguageSwitcher)
             item {
                 ShajeenReferenceTopBar(
+                    currentLanguage = currentLanguage,
+                    onLanguageSelected = onLanguageSelected,
                     onMenuClick = { showAllServicesSection = !showAllServicesSection },
                     onSearchClick = { showAllServicesSection = true },
                     onSupportClick = { dialPhone(agencySettings?.phone1 ?: "770038009") },
                     onNotificationsClick = {
-                        Toast.makeText(context, "مركز الإشعارات والتنبيهات", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, strings.notifications, Toast.LENGTH_SHORT).show()
                     },
                     hasUnreadNotifications = true
                 )
@@ -240,7 +243,7 @@ fun DashboardScreen(
                             onValueChange = onSearchChanged,
                             placeholder = {
                                 Text(
-                                    "ابحث في خدمات ورحلات شجين...",
+                                    strings.searchPlaceholder,
                                     color = ShajeenSecondaryText,
                                     fontSize = 13.sp
                                 )
@@ -332,7 +335,7 @@ fun DashboardScreen(
                             )
                             Spacer(modifier = Modifier.height(10.dp))
                             Text(
-                                text = "لا توجد خدمات مطابقة لبحثك",
+                                text = strings.noServicesFound,
                                 style = MaterialTheme.typography.titleSmall.copy(color = Color.Gray)
                             )
                         }

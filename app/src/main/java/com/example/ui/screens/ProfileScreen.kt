@@ -62,15 +62,19 @@ import com.example.ui.components.AgencyOwnerPortalCard
 fun ProfileScreen(
     currentClient: ClientEntity?,
     agencySettings: AgencySettingsEntity?,
+    currentLanguage: com.example.ui.locale.AppLanguage = com.example.ui.locale.LocalAppLanguage.current,
+    onLanguageSelected: (com.example.ui.locale.AppLanguage) -> Unit = {},
     onOwnerLoginClick: () -> Unit = {},
     onLogout: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val strings = com.example.ui.locale.LocalAppStrings.current
     val scrollState = rememberScrollState()
 
     val formattedDate = currentClient?.let {
-        SimpleDateFormat("yyyy/MM/dd", Locale("ar")).format(Date(it.registeredAt))
-    } ?: "اليوم"
+        val locale = if (currentLanguage == com.example.ui.locale.AppLanguage.ARABIC) Locale("ar") else Locale.ENGLISH
+        SimpleDateFormat("yyyy/MM/dd", locale).format(Date(it.registeredAt))
+    } ?: strings.today
 
     Box(
         modifier = modifier
@@ -121,7 +125,7 @@ fun ProfileScreen(
                         Spacer(modifier = Modifier.height(10.dp))
 
                         Text(
-                            text = currentClient?.fullName ?: "ضيف غير مسجل",
+                            text = currentClient?.fullName ?: strings.unregisteredGuest,
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White,
@@ -157,7 +161,7 @@ fun ProfileScreen(
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    text = "عميل موثق لدى وكالة شجين",
+                                    text = strings.verifiedClient,
                                     style = MaterialTheme.typography.labelSmall.copy(
                                         color = Color.White,
                                         fontSize = 11.sp,
@@ -172,6 +176,14 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Dedicated Application Language & Layout Direction Switcher Card
+            com.example.ui.components.LanguageSelectionCard(
+                currentLanguage = currentLanguage,
+                onLanguageSelected = onLanguageSelected
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             // Official Information Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -181,7 +193,7 @@ fun ProfileScreen(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "الوثائق الرسمية ومحددات السفر",
+                        text = strings.officialDocsTitle,
                         style = MaterialTheme.typography.titleSmall.copy(
                             fontWeight = FontWeight.Bold,
                             color = ShajeenDarkBlue
@@ -192,23 +204,23 @@ fun ProfileScreen(
 
                     ProfileItemRow(
                         icon = Icons.Default.CreditCard,
-                        label = "نوع الهوية الرسمية",
-                        value = currentClient?.idType ?: "بطاقة شخصية"
+                        label = strings.idType,
+                        value = currentClient?.idType ?: strings.idTypeNational
                     )
 
                     HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
 
                     ProfileItemRow(
                         icon = Icons.Default.Badge,
-                        label = "رقم الهوية / الجواز",
-                        value = currentClient?.idNumber ?: "غير محدد"
+                        label = strings.idNumber,
+                        value = currentClient?.idNumber ?: "---"
                     )
 
                     HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
 
                     ProfileItemRow(
                         icon = Icons.Default.Public,
-                        label = "الدولة والمحافظة",
+                        label = strings.countryGovernorate,
                         value = "${currentClient?.country ?: "اليمن"} - ${currentClient?.city ?: "صنعاء"}"
                     )
 
@@ -216,7 +228,7 @@ fun ProfileScreen(
 
                     ProfileItemRow(
                         icon = Icons.Default.LocationOn,
-                        label = "المديرية والحي",
+                        label = strings.districtArea,
                         value = "${currentClient?.district ?: "السبعين"} / ${currentClient?.area ?: "المنطقة الرئيسية"}"
                     )
 
@@ -224,7 +236,7 @@ fun ProfileScreen(
 
                     ProfileItemRow(
                         icon = Icons.Default.Phone,
-                        label = "تاريخ التسجيل",
+                        label = strings.registrationDate,
                         value = formattedDate
                     )
                 }
@@ -253,7 +265,7 @@ fun ProfileScreen(
             ) {
                 Icon(Icons.Default.Logout, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("تسجيل الخروج / تبديل الحساب", fontWeight = FontWeight.Bold)
+                Text(strings.logout, fontWeight = FontWeight.Bold)
             }
 
             Spacer(modifier = Modifier.height(20.dp))

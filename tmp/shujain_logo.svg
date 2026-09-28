@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <!-- Background Gradient for Squircle -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#F8FAFC"/>
+    </linearGradient>
+
+    <!-- Border Cyan Gradient -->
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0288D1"/>
+      <stop offset="50%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#0288D1"/>
+    </linearGradient>
+
+    <!-- Wave Ribbon Gradients -->
+    <linearGradient id="wave1Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#0288D1"/>
+    </linearGradient>
+    <linearGradient id="wave2Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0288D1"/>
+      <stop offset="100%" stop-color="#0277BD"/>
+    </linearGradient>
+    <linearGradient id="wave3Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0277BD"/>
+      <stop offset="100%" stop-color="#01579B"/>
+    </linearGradient>
+    <linearGradient id="wave4Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#01579B"/>
+      <stop offset="100%" stop-color="#0A2540"/>
+    </linearGradient>
+    <linearGradient id="wave5Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0A2540"/>
+      <stop offset="100%" stop-color="#081E34"/>
+    </linearGradient>
+    <linearGradient id="wave6Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#081E34"/>
+      <stop offset="100%" stop-color="#051524"/>
+    </linearGradient>
+
+    <!-- Subtle Drop Shadow -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0288D1" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <!-- Outer Rounded Squircle with Cyan Border matching exact uploaded photo -->
+  <rect x="24" y="24" width="976" height="976" rx="230" ry="230"
+        fill="url(#bgGrad)" stroke="url(#borderGrad)" stroke-width="26" filter="url(#shadow)"/>
+
+  <!-- Inner Soft Glow Outline -->
+  <rect x="42" y="42" width="940" height="940" rx="214" ry="214"
+        fill="none" stroke="#E0F2FE" stroke-width="6" opacity="0.6"/>
+
+  <!-- ============================================== -->
+  <!-- CLIMBING AIRPLANE AT APEX                      -->
+  <!-- ============================================== -->
+  <g transform="translate(512, 160)">
+    <!-- Main Jet Silhouette -->
+    <path d="M 0,-70
+             L 18,-24
+             L 94,8
+             L 94,22
+             L 18,10
+             L 18,52
+             L 48,70
+             L 48,82
+             L 0,72
+             L -48,82
+             L -48,70
+             L -18,52
+             L -18,10
+             L -94,22
+             L -94,8
+             L -18,-24
+             Z"
+          fill="#0288D1"/>
+
+    <!-- Cockpit Glass Window Highlight -->
+    <path d="M 0,-50 L 8,-26 L -8,-26 Z" fill="#0B2545"/>
+  </g>
+
+  <!-- ============================================== -->
+  <!-- VERTICAL GUIDELINE / MAST                      -->
+  <!-- ============================================== -->
+  <rect x="506" y="238" width="12" height="310" rx="6" fill="#38BDF8" opacity="0.85"/>
+  <circle cx="512" cy="245" r="7" fill="#0288D1"/>
+
+  <!-- ============================================== -->
+  <!-- 6 ASCENDING AERODYNAMIC WAVES                  -->
+  <!-- ============================================== -->
+  <!-- Wave 1 (Top Wave - Light Sky Blue) -->
+  <path d="M 330,310
+           C 400,240 470,270 512,282
+           C 560,268 620,240 694,300
+           C 640,260 560,285 512,298
+           C 460,285 390,260 330,310 Z"
+        fill="url(#wave1Grad)"/>
+
+  <!-- Wave 2 -->
+  <path d="M 320,360
+           C 390,290 465,320 512,334
+           C 565,320 625,290 704,350
+           C 645,310 565,336 512,350
+           C 455,336 385,310 320,360 Z"
+        fill="url(#wave2Grad)"/>
+
+  <!-- Wave 3 -->
+  <path d="M 315,410
+           C 385,340 460,370 512,386
+           C 565,370 630,340 710,400
+           C 650,360 565,388 512,402
+           C 455,388 380,360 315,410 Z"
+        fill="url(#wave3Grad)"/>
+
+  <!-- Wave 4 -->
+  <path d="M 315,460
+           C 380,390 460,422 512,438
+           C 565,422 635,390 710,450
+           C 650,410 565,440 512,454
+           C 455,440 375,410 315,460 Z"
+        fill="url(#wave4Grad)"/>
+
+  <!-- Wave 5 -->
+  <path d="M 320,510
+           C 385,442 460,474 512,490
+           C 565,474 635,442 705,502
+           C 645,462 565,492 512,506
+           C 455,492 375,462 320,510 Z"
+        fill="url(#wave5Grad)"/>
+
+  <!-- Wave 6 (Bottom Wave - Deepest Blue) -->
+  <path d="M 330,560
+           C 395,496 460,526 512,542
+           C 565,526 630,496 695,554
+           C 635,516 565,544 512,558
+           C 455,544 385,516 330,560 Z"
+        fill="url(#wave6Grad)"/>
+
+  <!-- ============================================== -->
+  <!-- TYPOGRAPHY: EXACT TEXT FROM UPLOADED IMAGE     -->
+  <!-- ============================================== -->
+  <!-- Line 1: Shujain Agency (Navy Bold) -->
+  <text x="512" y="740"
+        font-family="system-ui, -apple-system, sans-serif"
+        font-size="94"
+        font-weight="900"
+        letter-spacing="-1.5"
+        fill="#0B2545"
+        text-anchor="middle">Shujain Agency</text>
+
+  <!-- Line 2: For Travel & Tourism (Cyan Bold) -->
+  <text x="512" y="836"
+        font-family="system-ui, -apple-system, sans-serif"
+        font-size="64"
+        font-weight="800"
+        letter-spacing="0.5"
+        fill="#00A3E0"
+        text-anchor="middle">For Travel &amp; Tourism</text>
+</svg>
